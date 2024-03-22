@@ -159,8 +159,8 @@ struct position parsefen(char *fen) {
 		} else if (isdigit(fen[i])) {
 			sq >>= fen[i] - '0';
 		} else if (fen[i] != '/') {
-			// THIS IS A BAD IDEA
-			return result;
+			fputs("invalid fen", stderr);
+			exit(1);
 		}
 	}
 	// parse turn and halfmove clock
