@@ -179,9 +179,6 @@ struct position parsefen(char *fen) {
 	return result;
 }
 
-struct position move(struct position p, uint64_t start_square, uint64_t end_square) {
-	
-}
 
 /* evaluation -------------------------------------------------------------------------------------------------------*/
 
@@ -196,6 +193,28 @@ int64_t eval_material(struct position position) {
 	}
 	return total;
 }
+
+
+/* move generation --------------------------------------------------------------------------------------------------*/
+
+const size_t MAX_MOVES = 80;
+
+struct move {
+	uint64_t start;
+	uint64_t end;
+};
+
+uint64_t get_checkers(struct position position) {
+}
+
+struct move *get_moves(struct position position) {
+	if (popcount(get_checkers(position))) {
+		// check movegen
+	} else {
+		// no-check movegen
+	}
+}
+
 
 /* search -----------------------------------------------------------------------------------------------------------*/
 
