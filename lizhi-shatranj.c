@@ -62,7 +62,7 @@ uint64_t popcount(uint64_t n) {
 /* board ------------------------------------------------------------------------------------------------------------*/
 
 enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP };
-const uint64_t piece_values = 
+//const uint64_t piece_values = 
 
 struct position {
 	uint64_t piece[12];
@@ -113,7 +113,7 @@ const struct position empty = {
 		UINT64_C(0x0000000000000000)
 	},
 	.reversible_plies = UINT64_C(0)
-}
+};
 
 void print_position(struct position p) {
 	fprintf(
@@ -142,11 +142,12 @@ void print_position(struct position p) {
 }
 
 struct position parsefen(char *fen) {
-	uint64_t sq = UINT64_C(0x8000000000000000)
+	uint64_t sq = UINT64_C(0x8000000000000000);
 	struct position result;
-	result.piece = empty.piece;
-	size_t i = 0;
-	while (sq) {
+	for (size_t i=0; i<12; i++) {
+		result.piece[i] = empty.piece[i];
+	}
+	for (size_t i=0; sq; i++) {
 		if (isalpha(fen[i])) {
 			switch (fen[i]) {
 				case 'K': result.piece[WK] |= sq; break;
@@ -162,17 +163,19 @@ struct position parsefen(char *fen) {
 				case 'n': result.piece[BN] |= sq; break;
 				case 'p': result.piece[BP] |= sq; break;
 				default:
-					// something's wrong
+					fputs("invalid fen", stderr);
+					exit(1);
 			}
 			sq >>= 1;
 		} else if (isdigit(fen[i])) {
 			sq >>= fen[i] - '0';
 		} else if (fen[i] != '/') {
-			// something's wrong
+			// THIS IS A BAD IDEA
+			return result;
 		}
 	}
-	// parse turn, en passant square, castling, halfmove clock
-	return position;
+	// parse turn and halfmove clock
+	return result;
 }
 
 char *to_fen(struct position p) {
@@ -235,7 +238,12 @@ int main(void) {
 	assert(popcount(UINT64_C(1127298329768902696)) == 31);
 	assert(popcount(UINT64_C(12157665459056928801)) == 28);
 
-	assert(parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBFKBNR w KQkq - 0 1") == startpos);
+	struct position test = parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+	print_position(test);
+	for (size_t i=0; i<12; i++) {
+		assert(test.piece[i] == startpos.piece[i]);
+	}
+	assert(test.reversible_plies == startpos.reversible_plies);
 
 	uci();
 
