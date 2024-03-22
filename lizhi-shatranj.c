@@ -205,7 +205,7 @@ void debug_interface(void) {
 	puts("printing start position");
 	print_position(startpos);
 
-	char *input = malloc(100*sizeof(char));
+	char input[100];
 	struct position position;
 
 	while (1) {
