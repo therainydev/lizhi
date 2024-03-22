@@ -50,23 +50,13 @@ const uint64_t
 	popcount_c32 = UINT64_C(0x00000000ffffffff),
 	popcount_m   = UINT64_C(0x0101010101010101);
 
-uint64_t popcount_u64_slowmul(uint64_t n) {
-	abort();
-}
-
-uint64_t popcount_u64_fastmul(uint64_t n) {
-	abort();
-}
-
-uint64_t popcount_u64_smalltotal(uint64_t n) {
+uint64_t popcount(uint64_t n) {
 	uint64_t count;
 	for (count=0; n; count++) {
 		n &= n - 1;
 	}
 	return count;
 }
-
-#define popcount(x) popcount_u64_smalltotal(x)
 
 
 /* board ------------------------------------------------------------------------------------------------------------*/
