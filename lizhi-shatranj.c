@@ -51,7 +51,7 @@ const uint64_t
 	popcount_m   = UINT64_C(0x0101010101010101);
 
 uint64_t popcount(uint64_t n) {
-	uint64_t count;
+	size_t count;
 	for (count=0; n; count++) {
 		n &= n - 1;
 	}
