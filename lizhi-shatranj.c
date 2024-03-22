@@ -206,6 +206,14 @@ void debug_interface(void) {
 	puts(" * debug interface.");
 	puts("printing start position");
 	print_position(startpos);
+	char *input = malloc(100*sizeof(char));
+	struct position position;
+	while (1) {
+		fputs("fen> ", stdout);
+		gets(input);
+		position = parsefen(input);
+		print_position(position);
+	};
 }
 
 void uci(void) {
