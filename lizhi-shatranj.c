@@ -66,6 +66,7 @@ enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP };
 struct position {
 	uint64_t piece[12];
 	uint8_t reversible_plies;
+	int8_t mover;
 };
 
 const struct position startpos = {
@@ -120,10 +121,12 @@ void print_position(struct position p) {
 struct position parsefen(char *fen) {
 	uint64_t sq = UINT64_C(0x8000000000000000);
 	struct position result;
-	for (size_t i=0; i<12; i++) {
+	size_t i;
+	for (i=0; i<12; i++) {
 		result.piece[i] = empty.piece[i];
 	}
-	for (size_t i=0; sq; i++) {
+	result.reversible_plies = empty.reversible_plies;
+	for (i=0; sq; i++) {
 		if (isalpha(fen[i])) {
 			switch (fen[i]) {
 				case 'K': result.piece[WK] |= sq; break;
@@ -150,7 +153,31 @@ struct position parsefen(char *fen) {
 			exit(1);
 		}
 	}
-	// parse turn and halfmove clock
+	if (fen[i++] != ' ') {
+		fputs("invalid fen", stderr);
+		exit(1);
+	}
+	switch (fen[i++]) {
+		case 'w': result.mover = 0; break;
+		case 'b': result.mover = 1; break;
+		default:
+			fputs("invalid fen", stderr);
+			exit(1);
+	}
+	if (!(
+		fen[i++] == ' ' &&
+		fen[i++] == '-' &&
+		fen[i++] == ' ' &&
+		fen[i++] == '-' &&
+		fen[i++] == ' '
+	)) {
+		fputs("invalid fen", stderr);
+		exit(1);
+	}
+	while(isdigit(fen[i])) {
+		result.reversible_plies *= 10;
+		result.reversible_plies += fen[i++] - '0';
+	}
 	return result;
 }
 
@@ -209,7 +236,6 @@ int main(void) {
 	assert(popcount(UINT64_C(12157665459056928801)) == 28);
 
 	struct position test = parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
-	print_position(test);
 	for (size_t i=0; i<12; i++) {
 		assert(test.piece[i] == startpos.piece[i]);
 	}
