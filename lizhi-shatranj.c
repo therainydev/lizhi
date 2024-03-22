@@ -170,12 +170,6 @@ struct position move(struct position p, uint64_t start_square, uint64_t end_squa
 const int64_t piece_values[] = { 1000000, 900, 500, 300, 300, 100 };
 
 int64_t eval_material(struct position position) {
-	int64_t eval = 0;
-	for (size_t i=0; i<8; i++) {
-		for (size_t j=0; j<8; j++) {
-			// add material value of piece on position.board[i][j]
-		}
-	}
 }
 
 /* search -----------------------------------------------------------------------------------------------------------*/
