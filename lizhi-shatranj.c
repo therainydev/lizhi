@@ -62,22 +62,11 @@ uint64_t popcount(uint64_t n) {
 /* board ------------------------------------------------------------------------------------------------------------*/
 
 enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP };
-//const uint64_t piece_values = 
 
 struct position {
 	uint64_t piece[12];
 	uint8_t reversible_plies;
 };
-
-// starting position
-// rnafkanr xx bbbbbbbb
-// pppppppp xx bbbbbbbb
-// ******** xx bbbbbbbb
-// ******** xx bbbbbbbb
-// ******** xx bbbbbbbb
-// ******** xx bbbbbbbb
-// PPPPPPPP xx bbbbbbbb
-// RNAFKANR xx bbbbbbbb
 
 const struct position startpos = {
 	.piece = {
