@@ -25,7 +25,7 @@ otherwise, arising from, out of, or in connection with the software or the use o
 
 /* preprocessor stuff -----------------------------------------------------------------------------------------------*/
 
-#define LIZHI_VERSION "prototype"
+#define LIZHI_VERSION "shatranj prototype"
 //#define NDEBUG
 
 #include <assert.h>
@@ -71,50 +71,40 @@ uint64_t popcount_u64_smalltotal(uint64_t n) {
 
 /* board ------------------------------------------------------------------------------------------------------------*/
 
-enum pieces { WK, WQ, WR, WB, WN, WP, BK, BQ, BR, BB, BN, BP };
+enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP };
 const uint64_t piece_values = 
 
 struct position {
 	uint64_t piece[12];
-	uint64_t en_passant;
 	uint8_t reversible_plies;
-	uint8_t castlewq;
-	uint8_t castlewk;
-	uint8_t castlebq;
-	uint8_t castlebk;
 };
 
 // starting position
-// rnbqkbnr xx bbbbbbbb
+// rnafkanr xx bbbbbbbb
 // pppppppp xx bbbbbbbb
 // ******** xx bbbbbbbb
 // ******** xx bbbbbbbb
 // ******** xx bbbbbbbb
 // ******** xx bbbbbbbb
 // PPPPPPPP xx bbbbbbbb
-// RNBQKBNR xx bbbbbbbb
+// RNAFKANR xx bbbbbbbb
 
 const struct position startpos = {
 	.piece = {
 		UINT64_C(0x0000000000000008), // WK
-		UINT64_C(0x0000000000000010), // WQ
+		UINT64_C(0x0000000000000010), // WF
 		UINT64_C(0x0000000000000081), // WR
-		UINT64_C(0x0000000000000024), // WB
+		UINT64_C(0x0000000000000024), // WA
 		UINT64_C(0x0000000000000042), // WN
 		UINT64_C(0x000000000000ff00), // WP
 		UINT64_C(0x0800000000000000), // BK
-		UINT64_C(0x1000000000000000), // BQ
+		UINT64_C(0x1000000000000000), // BF
 		UINT64_C(0x8100000000000000), // BR
-		UINT64_C(0x2400000000000000), // BB
+		UINT64_C(0x2400000000000000), // BA
 		UINT64_C(0x4200000000000000), // BN
 		UINT64_C(0x00ff000000000000)  // BP
 	},
-	.en_passant = UINT64_C(0),
-	.reversible_plies = UINT8_C(0),
-	.castlewq = UINT8_C(1),
-	.castlewk = UINT8_C(1),
-	.castlebq = UINT8_C(1),
-	.castlebk = UINT8_C(1)
+	.reversible_plies = UINT8_C(0)
 };
 
 const struct position empty = {
@@ -132,12 +122,7 @@ const struct position empty = {
 		UINT64_C(0x0000000000000000),
 		UINT64_C(0x0000000000000000)
 	},
-	.en_passant = UINT64_C(0),
-	.reversible_plies = UINT64_C(0),
-	.castlewq = UINT8_C(0),
-	.castlewk = UINT8_C(0),
-	.castlebq = UINT8_C(0),
-	.castlebk = UINT8_C(0)
+	.reversible_plies = UINT64_C(0)
 }
 
 void print_position(struct position p) {
@@ -146,28 +131,23 @@ void print_position(struct position p) {
 		"struct position p = {\n"
 		"	piece = {\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WK\n"
-		"		UINT64_C(0x%016" PRIx64 "), // WQ\n"
+		"		UINT64_C(0x%016" PRIx64 "), // WF\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WR\n"
-		"		UINT64_C(0x%016" PRIx64 "), // WB\n"
+		"		UINT64_C(0x%016" PRIx64 "), // WA\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WN\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WP\n"
 		"		UINT64_C(0x%016" PRIx64 "), // BK\n"
-		"		UINT64_C(0x%016" PRIx64 "), // BQ\n"
+		"		UINT64_C(0x%016" PRIx64 "), // BF\n"
 		"		UINT64_C(0x%016" PRIx64 "), // BR\n"
-		"		UINT64_C(0x%016" PRIx64 "), // BB\n"
+		"		UINT64_C(0x%016" PRIx64 "), // BA\n"
 		"		UINT64_C(0x%016" PRIx64 "), // BN\n"
 		"		UINT64_C(0x%016" PRIx64 "), // BP\n"
 		"	};\n"
-		"	en_passant = UINT64_C(%" PRIu64 ");\n"
 		"	reversible_plies = UINT8_C(%" PRIu8 ");\n"
-		"	castlewq = UINT8_C(%" PRIu8 ");\n"
-		"	castlewk = UINT8_C(%" PRIu8 ");\n"
-		"	castlebq = UINT8_C(%" PRIu8 ");\n"
-		"	castlebk = UINT8_C(%" PRIu8 ");\n"
 		"};\n",
 		p.piece[0], p.piece[1], p.piece[2], p.piece[3], p.piece[4], p.piece[5],
 		p.piece[6], p.piece[7], p.piece[8], p.piece[9], p.piece[10], p.piece[11],
-		p.en_passant, p.reversible_plies, p.castlewq, p.castlewk, p.castlebq, p.castlebk
+		p.reversible_plies
 	);
 }
 
@@ -180,15 +160,15 @@ struct position parsefen(char *fen) {
 		if (isalpha(fen[i])) {
 			switch (fen[i]) {
 				case 'K': result.piece[WK] |= sq; break;
-				case 'Q': result.piece[WQ] |= sq; break;
+				case 'Q': result.piece[WF] |= sq; break;
 				case 'R': result.piece[WR] |= sq; break;
-				case 'B': result.piece[WB] |= sq; break;
+				case 'B': result.piece[WA] |= sq; break;
 				case 'N': result.piece[WN] |= sq; break;
 				case 'P': result.piece[WP] |= sq; break;
 				case 'k': result.piece[BK] |= sq; break;
-				case 'q': result.piece[BQ] |= sq; break;
+				case 'q': result.piece[BF] |= sq; break;
 				case 'r': result.piece[BR] |= sq; break;
-				case 'b': result.piece[BB] |= sq; break;
+				case 'b': result.piece[BA] |= sq; break;
 				case 'n': result.piece[BN] |= sq; break;
 				case 'p': result.piece[BP] |= sq; break;
 				default:
@@ -233,7 +213,7 @@ int64_t eval_material(struct position position) {
 
 /* uci --------------------------------------------------------------------------------------------------------------*/
 void debug_interface(void) {
-	puts("lizhi-engine " LIZHI_VERSION " debug interface");
+	puts(" * debug interface.");
 	puts("printing start position");
 	print_position(startpos);
 }
@@ -241,7 +221,7 @@ void debug_interface(void) {
 void uci(void) {
 	puts(
 		"uci\n"
-		"id name lizhi-shatranj prototype\n"
+		"id name lizhi " LIZHI_VERSION "\n"
 		"option name UCI_Variant type combo default shatranj var shatranj\n"
 		"uciok\n"
 	);
@@ -255,9 +235,6 @@ void uci(void) {
 /* Main function ----------------------------------------------------------------------------------------------------*/
 
 int main(void) {
-	#ifndef NDEBUG
-		fputs("debug enabled - running assertions\n", stderr);
-	#endif
 	assert(popcount(UINT64_C(0)) == 0);
 	assert(popcount(UINT64_MAX) == 64);
 	assert(popcount(popcount_c1) == 32);
@@ -268,7 +245,7 @@ int main(void) {
 	assert(popcount(UINT64_C(1127298329768902696)) == 31);
 	assert(popcount(UINT64_C(12157665459056928801)) == 28);
 
-	assert(parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1") == startpos);
+	assert(parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBFKBNR w KQkq - 0 1") == startpos);
 
 	uci();
 
