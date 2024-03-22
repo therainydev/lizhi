@@ -181,13 +181,6 @@ struct position parsefen(char *fen) {
 	return result;
 }
 
-char *to_fen(struct position p) {
-	char *fen = malloc(90*sizeof(char));
-	size_t char_to_modify = 0;
-	
-	return fen;
-}
-
 struct position move(struct position p, uint64_t start_square, uint64_t end_square) {
 	
 }
