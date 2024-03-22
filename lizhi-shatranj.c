@@ -164,13 +164,7 @@ struct position parsefen(char *fen) {
 			fputs("invalid fen", stderr);
 			exit(1);
 	}
-	if (!(
-		fen[i++] == ' ' &&
-		fen[i++] == '-' &&
-		fen[i++] == ' ' &&
-		fen[i++] == '-' &&
-		fen[i++] == ' '
-	)) {
+	if (!(fen[i++] == ' ' && fen[i++] == '-' && fen[i++] == ' ' && fen[i++] == '-' && fen[i++] == ' ')) {
 		fputs("invalid fen", stderr);
 		exit(1);
 	}
