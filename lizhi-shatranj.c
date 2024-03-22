@@ -185,9 +185,16 @@ struct position move(struct position p, uint64_t start_square, uint64_t end_squa
 
 /* evaluation -------------------------------------------------------------------------------------------------------*/
 
-const int64_t piece_values[] = { 1000000, 900, 500, 300, 300, 100 };
+#define MATE_VALUE 1000000
+
+const int64_t piece_values[] = { MATE_VALUE, 144, 657, 77, 415, 78 };
 
 int64_t eval_material(struct position position) {
+	int64_t total = 0;
+	for (size_t i=0; i<6; i++) {
+		total += (popcount(position.piece[i]) - popcount(position.piece[i+6])) * piece_values[i];
+	}
+	return total;
 }
 
 /* search -----------------------------------------------------------------------------------------------------------*/
@@ -197,13 +204,16 @@ void debug_interface(void) {
 	puts(" * debug interface.");
 	puts("printing start position");
 	print_position(startpos);
+
 	char *input = malloc(100*sizeof(char));
 	struct position position;
+
 	while (1) {
 		fputs("fen> ", stdout);
 		gets(input);
 		position = parsefen(input);
 		print_position(position);
+		fprintf(stderr, "evaluation: %" PRId64 " cp\n", eval_material(position));
 	};
 }
 
