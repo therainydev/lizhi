@@ -86,12 +86,14 @@ const struct position startpos = {
 		UINT64_C(0x4200000000000000), // BN
 		UINT64_C(0x00ff000000000000)  // BP
 	},
-	.reversible_plies = UINT8_C(0)
+	.reversible_plies = UINT8_C(0),
+	.mover = 0
 };
 
 const struct position empty = {
 	.piece = { 0 },
-	.reversible_plies = UINT64_C(0)
+	.reversible_plies = UINT64_C(0),
+	.mover = 0
 };
 
 void print_position(struct position p) {
