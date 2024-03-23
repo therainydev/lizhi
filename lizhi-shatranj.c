@@ -243,10 +243,11 @@ OTHERWISE:
  - IF ferz at h-file, offsets +9 and -7 ONLY
 (ignore the ranks because shifting off the board just gives zero)
 
+what if we have multiple ferzes?
+
 */
 
 uint64_t get_ferz_attacks(uint64_t ferz) {
-
 }
 
 uint64_t get_rook_attacks(uint64_t rook);
