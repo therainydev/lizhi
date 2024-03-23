@@ -182,7 +182,7 @@ struct position parsefen(char *fen) {
 
 /* evaluation -------------------------------------------------------------------------------------------------------*/
 
-const int64_t MATE_VALUE 1000000
+const int64_t MATE_VALUE INT64_C(1000000);
 
 const int64_t piece_values[] = { MATE_VALUE, 144, 657, 77, 415, 78 };
 
