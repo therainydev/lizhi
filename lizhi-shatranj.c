@@ -198,7 +198,12 @@ int64_t eval_material(struct position position) {
 /* move generation --------------------------------------------------------------------------------------------------*/
 
 const uint64_t A_FILE = UINT64_C(0x8080808080808080);
+const uint64_t B_FILE = UINT64_C(0x4040404040404040);
+const uint64_t G_FILE = UINT64_C(0x0202020202020202);
 const uint64_t H_FILE = UINT64_C(0x0101010101010101);
+
+const uint64_t A_OR_B_FILE = A_FILE | B_FILE;
+const uint64_t G_OR_H_FILE = G_FILE | H_FILE;
 
 const size_t MAX_MOVES = 80;
 
@@ -219,7 +224,27 @@ uint64_t get_ferz_attacks(uint64_t ferz) {
 }
 
 uint64_t get_rook_attacks(uint64_t rook);
-uint64_t get_alfil_attacks(uint64_t alfil);
+
+/*
+
+.*gfe*cb
+a0987654
+3<-A->34
+567890ab
+c*efg*..
+
+*/
+
+uint64_t get_alfil_attacks(uint64_t alfil) {
+	uint64_t alfil_ab = alfil & A_OR_B_FILE;
+	alfil = alfil ^ alfil_ab;
+	uint64_t alfil_gh = alfil & G_OR_H_FILE;
+	alfil = alfil ^ alfil_gh;
+	return
+		alfil_ab << 14 | alfil_ab >> 18 |
+		alfil_gh << 18 | alfil_gh >> 14 |
+		alfil << 18 | alfil << 14 | alfil >> 14 | alfil >> 18;
+}
 
 
 /* notes -----------------------------------------------------------------------
@@ -273,9 +298,11 @@ void debug_interface(void) {
 		fprintf(
 			stderr,
 			"evaluation: %" PRId64 " cp\n"
-			"ferz attacks: 0x%016" PRIx64 "\n",
+			"ferz attacks: 0x%016" PRIx64 "\n"
+			"alfil attacks: 0x%016" PRIx64 "\n",
 			eval_material(position),
-			get_ferz_attacks(position.piece[WF+6*position.mover])
+			get_ferz_attacks(position.piece[WF+6*position.mover]),
+			get_alfil_attacks(position.piece[WA+6*position.mover])
 		);
 	};
 }
