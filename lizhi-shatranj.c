@@ -197,6 +197,7 @@ int64_t eval_material(struct position position) {
 
 
 /* move generation --------------------------------------------------------------------------------------------------*/
+// This is a confusing and incoherent mess.
 
 const size_t MAX_MOVES = 80;
 
@@ -205,7 +206,73 @@ struct move {
 	uint64_t end;
 };
 
+// hmmmmmmmmm
+
+// notably absent: king attacks
+
+/* notes -----------------------------------------------------------------------
+
+a bitboard is a uint64_t
+
+all ferz attacks are directly diagonal to the ferz
+
+BITBOARD:
+*8*6543<
+-F->3456
+*8*.....
+or
+...*8*65
+43<-F->3
+456*8*..
+
+
+BITBOARD:
+.......X
+8*6543<-
+F->3456X
+8*......
+or
+......*8
+X6543<-F
+->3456*8
+X.......
+
+IF ferz is NOT at edge, offsets are: +9, +7, -7, -9
+OTHERWISE:
+ - IF ferz at a-file, offsets +7 and -9 ONLY
+ - IF ferz at h-file, offsets +9 and -7 ONLY
+(ignore the ranks because shifting off the board just gives zero)
+
+*/
+
+uint64_t get_ferz_attacks(uint64_t ferz) {
+
+}
+
+uint64_t get_rook_attacks(uint64_t rook);
+uint64_t get_alfil_attacks(uint64_t alfil);
+
+
+/* notes -----------------------------------------------------------------------
+
+ +15 +17
++6─└┬┘─+10
+    N
+-
+
+We have to avoid wrapping.
+
+*/
+uint64_t get_knight_attacks(uint64_t knight) {
+	uint64_t attacks = UINT64_C(0);
+
+}
+
+
+uint64_t get_pawn_attacks(uint64_t pawn);
+
 uint64_t get_checkers(struct position position) {
+
 }
 
 struct move *get_moves(struct position position) {
@@ -248,7 +315,7 @@ void uci(void) {
 	debug_interface();
 	return;
 	while (1) {
-		
+
 	}
 }
 
