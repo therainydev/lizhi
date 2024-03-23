@@ -182,7 +182,7 @@ struct position parsefen(char *fen) {
 
 /* evaluation -------------------------------------------------------------------------------------------------------*/
 
-const int64_t MATE_VALUE INT64_C(1000000);
+const int64_t MATE_VALUE = INT64_C(1000000);
 
 const int64_t piece_values[] = { MATE_VALUE, 144, 657, 77, 415, 78 };
 
@@ -196,7 +196,9 @@ int64_t eval_material(struct position position) {
 
 
 /* move generation --------------------------------------------------------------------------------------------------*/
-// This is a confusing and incoherent mess.
+
+const uint64_t A_FILE = UINT64_C(0x8080808080808080);
+const uint64_t H_FILE = UINT64_C(0x0101010101010101);
 
 const size_t MAX_MOVES = 80;
 
@@ -205,48 +207,15 @@ struct move {
 	uint64_t end;
 };
 
-// hmmmmmmmmm
-
-// notably absent: king attacks
-
-/* notes -----------------------------------------------------------------------
-
-a bitboard is a uint64_t
-
-all ferz attacks are directly diagonal to the ferz
-
-BITBOARD:
-*8*6543<
--F->3456
-*8*.....
-or
-...*8*65
-43<-F->3
-456*8*..
-
-
-BITBOARD:
-.......X
-8*6543<-
-F->3456X
-8*......
-or
-......*8
-X6543<-F
-->3456*8
-X.......
-
-IF ferz is NOT at edge, offsets are: +9, +7, -7, -9
-OTHERWISE:
- - IF ferz at a-file, offsets +7 and -9 ONLY
- - IF ferz at h-file, offsets +9 and -7 ONLY
-(ignore the ranks because shifting off the board just gives zero)
-
-what if we have multiple ferzes?
-
-*/
-
 uint64_t get_ferz_attacks(uint64_t ferz) {
+	uint64_t ferz_a = ferz & A_FILE;
+	ferz = ferz ^ ferz_a;
+	uint64_t ferz_h = ferz & H_FILE;
+	ferz = ferz ^ ferz_h;
+	return
+		ferz_a << 7 | ferz_a >> 9 |
+		ferz_h << 9 | ferz_h >> 7 |
+		ferz << 9 | ferz << 7 | ferz >> 7 | ferz >> 9;
 }
 
 uint64_t get_rook_attacks(uint64_t rook);
@@ -297,11 +266,17 @@ void debug_interface(void) {
 	struct position position;
 
 	while (1) {
-		fputs("fen> ", stdout);
+		fputs("fen> ", stderr);
 		gets(input);
 		position = parsefen(input);
 		print_position(position);
-		fprintf(stderr, "evaluation: %" PRId64 " cp\n", eval_material(position));
+		fprintf(
+			stderr,
+			"evaluation: %" PRId64 " cp\n"
+			"ferz attacks: 0x%016" PRIx64 "\n",
+			eval_material(position),
+			get_ferz_attacks(position.piece[WF+6*position.mover])
+		);
 	};
 }
 
