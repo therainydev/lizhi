@@ -204,6 +204,8 @@ const uint64_t H_FILE = UINT64_C(0x0101010101010101);
 const uint64_t A_OR_B_FILE = A_FILE | B_FILE;
 const uint64_t G_OR_H_FILE = G_FILE | H_FILE;
 
+const uint64_t CENTER_4_FILES = UINT64_C(0x3c3c3c3c3c3c3c3c);
+
 const size_t MAX_MOVES = 80;
 
 struct move {
@@ -235,20 +237,21 @@ uint64_t get_alfil_attacks(uint64_t alfil) {
 		alfil << 18 | alfil << 14 | alfil >> 14 | alfil >> 18;
 }
 
-
-/* notes -----------------------------------------------------------------------
-
- +15 +17
-+6─└┬┘─+10
-    N
--
-
-We have to avoid wrapping.
-
-*/
 uint64_t get_knight_attacks(uint64_t knight) {
+	uint64_t
+		knight_a = knight & A_FILE,
+		knight_b = knight & B_FILE,
+		knight_g = knight & G_FILE,
+		knight_h = knight & H_FILE;
+	knight &= CENTER_4_FILES;
+	return
+		knight_a << 15 | knight_a <<  6 | knight_a >> 10 | knight_a >> 17 |
+		knight_h << 17 | knight_h << 10 | knight_h >>  6 | knight_h >> 15 |
+		knight_b << 17 | knight_b << 15 | knight_b <<  6 | knight_b >> 10 | knight_b >> 15 | knight_b >> 17 |
+		knight_g << 17 | knight_g << 15 | knight_g << 10 | knight_g >>  6 | knight_g >> 15 | knight_g >> 17 |
+		knight << 17 | knight << 15 | knight << 10 | knight <<  6 |
+		knight >>  6 | knight >> 10 | knight >> 15 | knight >> 17;
 }
-
 
 uint64_t get_pawn_attacks(uint64_t ferz) {
 	uint64_t ferz_a = ferz & A_FILE;
