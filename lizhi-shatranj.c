@@ -29,7 +29,6 @@ otherwise, arising from, out of, or in connection with the software or the use o
 /* preprocessor stuff -----------------------------------------------------------------------------------------------*/
 
 #define LIZHI_VERSION "shatranj prototype"
-//#define NDEBUG
 
 #include <assert.h>
 #include <ctype.h>
@@ -225,16 +224,6 @@ uint64_t get_ferz_attacks(uint64_t ferz) {
 
 uint64_t get_rook_attacks(uint64_t rook);
 
-/*
-
-.*gfe*cb
-a0987654
-3<-A->34
-567890ab
-c*efg*..
-
-*/
-
 uint64_t get_alfil_attacks(uint64_t alfil) {
 	uint64_t alfil_ab = alfil & A_OR_B_FILE;
 	alfil = alfil ^ alfil_ab;
@@ -258,8 +247,6 @@ We have to avoid wrapping.
 
 */
 uint64_t get_knight_attacks(uint64_t knight) {
-	uint64_t attacks = UINT64_C(0);
-
 }
 
 
@@ -325,9 +312,6 @@ void uci(void) {
 	);
 	debug_interface();
 	return;
-	while (1) {
-
-	}
 }
 
 
