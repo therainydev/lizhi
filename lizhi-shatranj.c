@@ -40,7 +40,7 @@ otherwise, arising from, out of, or in connection with the software or the use o
 /* function prototypes ----------------------------------------------------------------------------------------------*/
 
 
-/* non-chess-specific functions -------------------------------------------------------------------------------------*/
+/* non-shatranj-specific functions ----------------------------------------------------------------------------------*/
 
 const uint64_t
 	popcount_c1  = UINT64_C(0x5555555555555555),
