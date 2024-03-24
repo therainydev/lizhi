@@ -38,9 +38,6 @@ otherwise, arising from, out of, or in connection with the software or the use o
 #include <string.h>
 
 
-/* function prototypes ----------------------------------------------------------------------------------------------*/
-
-
 /* non-shatranj-specific functions ----------------------------------------------------------------------------------*/
 
 const uint64_t
