@@ -35,6 +35,7 @@ otherwise, arising from, out of, or in connection with the software or the use o
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 
 /* function prototypes ----------------------------------------------------------------------------------------------*/
@@ -95,9 +96,20 @@ const struct position empty = {
 	.mover = 0
 };
 
-void print_position(struct position p) {
+void print_bitboard(uint64_t bitboard, FILE *stream) {
+	fprintf(stream, "bitboard = 0x%016" PRIx64 "\n", bitboard);
+	size_t i = 64;
+	while (i --> 0) {
+		putchar(bitboard >> i & 1 ? '*':'.');
+		if(!(i & 7)) {
+			putchar('\n');
+		}
+	}
+}
+
+void print_position(struct position p, FILE *stream) {
 	fprintf(
-		stderr,
+		stream,
 		"struct position p = {\n"
 		"	piece = {\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WK\n"
@@ -145,31 +157,26 @@ struct position parsefen(char *fen) {
 				case 'n': result.piece[BN] |= sq; break;
 				case 'p': result.piece[BP] |= sq; break;
 				default:
-					fputs("invalid fen", stderr);
-					exit(1);
+					return empty;
 			}
 			sq >>= 1;
 		} else if (isdigit(fen[i])) {
 			sq >>= fen[i] - '0';
 		} else if (fen[i] != '/') {
-			fputs("invalid fen", stderr);
-			exit(1);
+			return empty;
 		}
 	}
 	if (fen[i++] != ' ') {
-		fputs("invalid fen", stderr);
-		exit(1);
+		return empty;
 	}
 	switch (fen[i++]) {
 		case 'w': result.mover = 0; break;
 		case 'b': result.mover = 1; break;
 		default:
-			fputs("invalid fen", stderr);
-			exit(1);
+			return empty;
 	}
 	if (!(fen[i++] == ' ' && fen[i++] == '-' && fen[i++] == ' ' && fen[i++] == '-' && fen[i++] == ' ')) {
-		fputs("invalid fen", stderr);
-		exit(1);
+		return empty;
 	}
 	while(isdigit(fen[i])) {
 		result.reversible_plies *= 10;
@@ -280,45 +287,9 @@ struct move *get_moves(struct position position) {
 /* search -----------------------------------------------------------------------------------------------------------*/
 
 
-/* uci --------------------------------------------------------------------------------------------------------------*/
-void debug_interface(void) {
-	puts(" * debug interface.");
-	puts("printing start position");
-	print_position(startpos);
+/* main function & user interface -----------------------------------------------------------------------------------*/
 
-	char input[100];
-	struct position position;
-
-	while (1) {
-		fputs("fen> ", stderr);
-		gets(input);
-		position = parsefen(input);
-		print_position(position);
-		fprintf(
-			stderr,
-			"evaluation: %" PRId64 " cp\n"
-			"ferz attacks: 0x%016" PRIx64 "\n"
-			"alfil attacks: 0x%016" PRIx64 "\n",
-			eval_material(position),
-			get_ferz_attacks(position.piece[WF+6*position.mover]),
-			get_alfil_attacks(position.piece[WA+6*position.mover])
-		);
-	};
-}
-
-void uci(void) {
-	puts(
-		"uci\n"
-		"id name lizhi " LIZHI_VERSION "\n"
-		"option name UCI_Variant type combo default shatranj var shatranj\n"
-		"uciok\n"
-	);
-	debug_interface();
-	return;
-}
-
-
-/* Main function ----------------------------------------------------------------------------------------------------*/
+const size_t UCI_INPUT_SIZE = 10000;
 
 int main(void) {
 	assert(popcount(UINT64_C(0)) == 0);
@@ -337,7 +308,114 @@ int main(void) {
 	}
 	assert(test.reversible_plies == startpos.reversible_plies);
 
-	uci();
+	fputs(
+		"\33[0;3;31mlizhi " LIZHI_VERSION "\33[0m by \33[32mthe\33[36mrainy\33[34mdev\33[0m\n"
+		"This program is a text-only shatranj engine, but tries to be nice to work with even without a GUI.\n"
+		"If you want to know how to use this program, enter 'help'.\n"
+		"If you need to work directly with UCI, enter 'uci'.\n",
+		stdout
+	);
 
-	return 0;
+	struct position position = startpos;
+	char *orig, *input, *token;
+	size_t i;
+
+	while(1) {
+		orig = input = malloc(UCI_INPUT_SIZE*sizeof(char));
+		if (orig == NULL) {
+			fputs("failed to allocate memory for reading input\n", stderr);
+			exit(1);
+		}
+		fputs(" \33[3;31mlizhi \33[35m-> \33[34m", stdout);
+		if (fgets(orig, UCI_INPUT_SIZE, stdin) == NULL) {
+			fputs("\n\33[0;1mbye\33[0m\n", stdout);
+			exit(0);
+		}
+		fputs("\33[0m", stdout);
+
+		token = strsep(&input, " \n\t");
+		if (token == NULL) {
+			fputs("please enter a valid command\n", stdout);
+			free(orig);
+			continue;
+		}
+
+		if (!strcmp(token, "quit")) {
+			fputs("\33[1mbye\33[0m\n", stdout);
+			exit(0);
+		}
+
+		else if (!strcmp(token, "help")) {
+			fputs(
+				"\33[1;4;32mcommands\33[0m\n"
+				" \33[1;32mquit\33[0m   - exit the engine\n"
+				" \33[1;32mhelp\33[0m   - print this\n"
+				" \33[1;32muci\33[0m    - enter UCI mode\n"
+				" \33[1;34mprint\33[0m  - print the current position\n"
+				" \33[1;34mfen\33[0m    - parse fen into current position\n"
+				" \33[1;35mferz\33[0m   - print ferz attacks\n"
+				" \33[1;35mrook\33[0m   - print rook attacks\n"
+				" \33[1;35malfil\33[0m  - print alfil attacks\n"
+				" \33[1;35mknight\33[0m - print knight attacks\n"
+				" \33[1;35mpawn\33[0m   - print pawn attacks\n",
+				stdout
+			);
+		}
+
+		else if (!strcmp(token, "uci")) {
+			goto UCI;
+		}
+
+		else if (!strcmp(token, "print")) {
+			print_position(position, stdout);
+		}
+
+		else if (!strcmp(token, "fen")) {
+			position = parsefen(input);
+		}
+
+		else if (!strcmp(token, "ferz")) {
+			uint64_t attacks = get_ferz_attacks(position.piece[WF+6*position.mover]);
+			print_bitboard(attacks, stdout);
+		}
+
+		else if (!strcmp(token, "rook")) {
+			// TODO
+			puts("not implemented");
+		}
+
+		else if (!strcmp(token, "alfil")) {
+			uint64_t attacks = get_alfil_attacks(position.piece[WA+6*position.mover]);
+			print_bitboard(attacks, stdout);
+		}
+
+		else if (!strcmp(token, "knight")) {
+			uint64_t attacks = get_knight_attacks(position.piece[WN+6*position.mover]);
+			print_bitboard(attacks, stdout);
+		}
+
+		else if (!strcmp(token, "pawn")) {
+			uint64_t attacks = get_pawn_attacks(position.piece[WP+6*position.mover]);
+			print_bitboard(attacks, stdout);
+		}
+
+		else {
+			puts("please enter a valid command");
+		}
+
+		free(orig);
+	}
+
+	UCI:
+	fputs(
+		"uci\n"
+		"id name lizhi " LIZHI_VERSION "\n"
+		"option name UCI_Variant type combo default shatranj var shatranj\n"
+		"uciok\n",
+		stdout
+	);
+	exit(1);
+	while(1) {
+
+	}
 }
