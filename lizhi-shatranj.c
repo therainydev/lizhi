@@ -209,6 +209,7 @@ const uint64_t A_OR_B_FILE = A_FILE | B_FILE;
 const uint64_t G_OR_H_FILE = G_FILE | H_FILE;
 
 const uint64_t CENTER_4_FILES = UINT64_C(0x3c3c3c3c3c3c3c3c);
+const uint64_t EDGE_FILES     = A_FILE | H_FILE;
 
 const size_t MAX_MOVES = 80;
 
@@ -228,7 +229,39 @@ uint64_t get_ferz_attacks(uint64_t ferz) {
 		ferz << 9 | ferz << 7 | ferz >> 7 | ferz >> 9;
 }
 
-uint64_t get_rook_attacks(uint64_t rook);
+uint64_t get_rook_attacks(uint64_t rook, uint64_t obstructions) {
+	uint64_t up, left, right, down, last = 0;
+	switch (popcount(rook)) {
+		case 0:
+			return 0;
+		case 1:
+			up    = rook >> 8;
+			right = rook >> 1;
+			left = rook << 1;
+			down  = rook << 8;
+			while (up && !(up & obstructions) && up != last) {
+				last = up;
+				up |= up >> 8;
+			}
+			while (right && !(right & (obstructions | EDGE_FILES)) && right != last) {
+				last = right;
+				right |= right >> 1;
+			}
+			while (left && !(left & (obstructions | EDGE_FILES)) && left != last) {
+				last = left;
+				left |= left << 1;
+			}
+			while (down && !(down & obstructions) && down != last) {
+				last = down;
+				down |= down << 8;
+			}
+			return up | left | right | down;
+		case 2:
+			return get_rook_attacks(rook&(rook-1), obstructions) | get_rook_attacks(rook&(~rook+1), obstructions);
+		default:
+			abort();
+	}
+}
 
 uint64_t get_alfil_attacks(uint64_t alfil) {
 	uint64_t alfil_ab = alfil & A_OR_B_FILE;
@@ -382,8 +415,11 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "rook")) {
-			// TODO
-			puts("not implemented");
+			uint64_t obstructions = 0;
+			for (size_t i=0; i<12; i++) {
+				obstructions |= position.piece[i];
+			}
+			print_bitboard(get_rook_attacks(position.piece[WR+6*position.mover], obstructions), stdout);
 		}
 
 		else if (!strcmp(token, "alfil")) {
