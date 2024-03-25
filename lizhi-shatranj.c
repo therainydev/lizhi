@@ -410,8 +410,7 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "ferz")) {
-			uint64_t attacks = get_ferz_attacks(position.piece[WF+6*position.mover]);
-			print_bitboard(attacks, stdout);
+			print_bitboard(get_ferz_attacks(position.piece[WF+6*position.mover]), stdout);
 		}
 
 		else if (!strcmp(token, "rook")) {
@@ -423,18 +422,15 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "alfil")) {
-			uint64_t attacks = get_alfil_attacks(position.piece[WA+6*position.mover]);
-			print_bitboard(attacks, stdout);
+			print_bitboard(get_alfil_attacks(position.piece[WA+6*position.mover]), stdout);
 		}
 
 		else if (!strcmp(token, "knight")) {
-			uint64_t attacks = get_knight_attacks(position.piece[WN+6*position.mover]);
-			print_bitboard(attacks, stdout);
+			print_bitboard(get_knight_attacks(position.piece[WN+6*position.mover]), stdout);
 		}
 
 		else if (!strcmp(token, "pawn")) {
-			uint64_t attacks = get_pawn_attacks(position.piece[WP+6*position.mover]);
-			print_bitboard(attacks, stdout);
+			print_bitboard(get_pawn_attacks(position.piece[WP+6*position.mover]), stdout);
 		}
 
 		else {
