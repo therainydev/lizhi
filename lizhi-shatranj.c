@@ -295,8 +295,7 @@ uint64_t get_pawn_attacks(uint64_t pawn) {
 	pawn = pawn ^ pawn_a;
 	uint64_t pawn_h = pawn & H_FILE;
 	pawn = pawn ^ pawn_h;
-	return
-		pawn_a << 7 | pawn_h << 9 | pawn << 9 | pawn << 7;
+	return pawn_a << 7 | pawn_h << 9 | pawn << 9 | pawn << 7;
 }
 
 uint64_t get_checkers(struct position position) {
