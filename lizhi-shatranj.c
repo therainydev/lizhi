@@ -342,10 +342,15 @@ int main(void) {
 			exit(0);
 		}
 
+		else if (!strcmp(token, "cat")) {
+			fputs("ᓚᘏᗢ\n", stdout);
+		}
+
 		else if (!strcmp(token, "help")) {
 			fputs(
 				"\33[1;4;32mcommands\33[0m\n"
 				" \33[1;32mquit\33[0m   - exit the engine\n"
+				" \33[1;32mcat\33[0m    - print a cat\n"
 				" \33[1;32mhelp\33[0m   - print this\n"
 				" \33[1;32muci\33[0m    - enter UCI mode\n"
 				" \33[1;34mprint\33[0m  - print the current position\n"
