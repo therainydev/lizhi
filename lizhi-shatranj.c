@@ -290,15 +290,13 @@ uint64_t get_knight_attacks(uint64_t knight) {
 		knight >>  6 | knight >> 10 | knight >> 15 | knight >> 17;
 }
 
-uint64_t get_pawn_attacks(uint64_t ferz) {
-	uint64_t ferz_a = ferz & A_FILE;
-	ferz = ferz ^ ferz_a;
-	uint64_t ferz_h = ferz & H_FILE;
-	ferz = ferz ^ ferz_h;
+uint64_t get_pawn_attacks(uint64_t pawn) {
+	uint64_t pawn_a = pawn & A_FILE;
+	pawn = pawn ^ pawn_a;
+	uint64_t pawn_h = pawn & H_FILE;
+	pawn = pawn ^ pawn_h;
 	return
-		ferz_a << 7 |// ferz_a >> 9 |
-		ferz_h << 9 |// ferz_h >> 7 |
-		ferz << 9 | ferz << 7;// | ferz >> 7 | ferz >> 9;
+		pawn_a << 7 | pawn_h << 9 | pawn << 9 | pawn << 7;
 }
 
 uint64_t get_checkers(struct position position) {
