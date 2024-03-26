@@ -351,6 +351,7 @@ void self_test(void) {
 	TEST(popcount(UINT64_C(12157665459056928801)) == 28);
 
 	struct position test;
+	uint64_t obstructions;
 
 	test = parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
 	for (size_t i=0; i<12; i++) {
@@ -360,8 +361,22 @@ void self_test(void) {
 	TEST(test.mover == startpos.mover);
 
 	test = parsefen("nr6/p1p1p1p1/P1P1P1PR/1B1q1N2/2bp1bkN/Bp1PQprp/RP3P1P/1n5K w - - 34 1");
+	obstructions = 0;
+	for (size_t i=0; i<12; i++) {
+		obstructions |= test.piece[i];
+	}
 	TEST(test.reversible_plies == 34);
 	TEST(test.mover == 0);
+	TEST(get_ferz_attacks(test.piece[WF]) == 0x0000000014001400);
+	TEST(get_ferz_attacks(test.piece[BF]) == 0x0000280028000000);
+	TEST(get_rook_attacks(test.piece[WR], obstructions) == 0x0101020101804080);
+	TEST(get_rook_attacks(test.piece[BR], obstructions) == 0xbf40404002050202);
+	TEST(get_alfil_attacks(test.piece[WA]) == 0x0010002000100020);
+	TEST(get_alfil_attacks(test.piece[BA]) == 0x0000990000009900);
+	TEST(get_knight_attacks(test.piece[WN]) == 0x000a1304110e0200);
+	TEST(get_knight_attacks(test.piece[BN]) == 0x0020400000a01000);
+	TEST(get_pawn_attacks(test.piece[WP]) == 0x0055000028aa0000);
+	TEST(get_pawn_attacks(test.piece[BP]) == 0x000055000028aa00);
 
 	test = parsefen("rnbQKbnr/8/8/pppppppp/PPPPPPPP/8/8/RNBqkBNR b - - 26 1");
 	TEST(test.reversible_plies == 26);
