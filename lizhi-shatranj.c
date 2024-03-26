@@ -230,26 +230,30 @@ uint64_t get_ferz_attacks(uint64_t ferz) {
 }
 
 uint64_t get_rook_attacks(uint64_t rook, uint64_t obstructions) {
-	uint64_t up, left, right, down, last = 0;
+	uint64_t up, left = 0, right = 0, down, last = 0;
 	switch (popcount(rook)) {
 		case 0:
 			return 0;
 		case 1:
 			up    = rook >> 8;
-			right = rook >> 1;
-			left = rook << 1;
 			down  = rook << 8;
 			while (up && !(up & obstructions) && up != last) {
 				last = up;
 				up |= up >> 8;
 			}
-			while (right && !(right & (obstructions | EDGE_FILES)) && right != last) {
-				last = right;
-				right |= right >> 1;
+			if (!(rook & H_FILE)) {
+				right = rook >> 1;
+				while (right && !(right & (obstructions | EDGE_FILES)) && right != last) {
+					last = right;
+					right |= right >> 1;
+				}
 			}
-			while (left && !(left & (obstructions | EDGE_FILES)) && left != last) {
-				last = left;
-				left |= left << 1;
+			if (!(rook & A_FILE)) {
+				left = rook << 1;
+				while (left && !(left & (obstructions | EDGE_FILES)) && left != last) {
+					last = left;
+					left |= left << 1;
+				}
 			}
 			while (down && !(down & obstructions) && down != last) {
 				last = down;
