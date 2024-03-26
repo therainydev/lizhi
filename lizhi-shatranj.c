@@ -298,12 +298,26 @@ uint64_t get_pawn_attacks(uint64_t pawn) {
 	return pawn_a << 7 | pawn_h << 9 | pawn << 9 | pawn << 7;
 }
 
-uint64_t get_checkers(struct position position) {
-
+uint64_t checked(struct position position) {
+	uint64_t obstructions = 0;
+	for (size_t i=0; i<12; i++) {
+		obstructions |= position.piece[i];
+	}
+	if ((
+		get_ferz_attacks(position.piece[WF+6*!position.mover]) |
+		get_rook_attacks(position.piece[WR+6*!position.mover], obstructions) |
+		get_alfil_attacks(position.piece[WA+6*!position.mover]) |
+		get_knight_attacks(position.piece[WN+6*!position.mover]) |
+		get_pawn_attacks(position.piece[WP+6*!position.mover])
+	) & position.piece[WK]) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 struct move *get_moves(struct position position) {
-	if (popcount(get_checkers(position))) {
+	if (checked(position))) {
 		// check movegen
 	} else {
 		// no-check movegen
