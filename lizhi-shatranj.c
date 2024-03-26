@@ -294,12 +294,14 @@ uint64_t get_knight_attacks(uint64_t knight) {
 		knight >>  6 | knight >> 10 | knight >> 15 | knight >> 17;
 }
 
-uint64_t get_pawn_attacks(uint64_t pawn) {
+uint64_t get_pawn_attacks(uint64_t pawn, int8_t mover) {
 	uint64_t pawn_a = pawn & A_FILE;
 	pawn = pawn ^ pawn_a;
 	uint64_t pawn_h = pawn & H_FILE;
 	pawn = pawn ^ pawn_h;
-	return pawn_a << 7 | pawn_h << 9 | pawn << 9 | pawn << 7;
+	return mover
+		? pawn_a >> 9 | pawn_h >> 7 | pawn >> 9 | pawn >> 7
+		: pawn_a << 7 | pawn_h << 9 | pawn << 7 | pawn << 9;
 }
 
 uint64_t checked(struct position position) {
@@ -312,7 +314,7 @@ uint64_t checked(struct position position) {
 		get_rook_attacks(position.piece[WR+6*!position.mover], obstructions) |
 		get_alfil_attacks(position.piece[WA+6*!position.mover]) |
 		get_knight_attacks(position.piece[WN+6*!position.mover]) |
-		get_pawn_attacks(position.piece[WP+6*!position.mover])
+		get_pawn_attacks(position.piece[WP+6*!position.mover], !position.mover)
 	) & position.piece[WK]) {
 		return 1;
 	} else {
@@ -379,8 +381,8 @@ void self_test(void) {
 	TEST(get_alfil_attacks(test.piece[BA]) == 0x0000990000009900);
 	TEST(get_knight_attacks(test.piece[WN]) == 0x000a1304110e0200);
 	TEST(get_knight_attacks(test.piece[BN]) == 0x0020400000a01000);
-	TEST(get_pawn_attacks(test.piece[WP]) == 0x0055000028aa0000);
-	TEST(get_pawn_attacks(test.piece[BP]) == 0x000055000028aa00);
+	TEST(get_pawn_attacks(test.piece[WP], 0) == 0x0055000028aa0000);
+	TEST(get_pawn_attacks(test.piece[BP], 1) == 0x000055000028aa00);
 
 	test = parsefen("rnbQKbnr/8/8/pppppppp/PPPPPPPP/8/8/RNBqkBNR b - - 26 1");
 	TEST(test.reversible_plies == 26);
@@ -492,7 +494,7 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "pawn")) {
-			print_bitboard(get_pawn_attacks(position.piece[WP+6*position.mover]), stdout);
+			print_bitboard(get_pawn_attacks(position.piece[WP+6*position.mover], position.mover), stdout);
 		}
 
 		else {
