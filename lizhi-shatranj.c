@@ -30,7 +30,7 @@ otherwise, arising from, out of, or in connection with the software or the use o
 
 #define LIZHI_VERSION "shatranj prototype"
 
-#include <assert.h>
+//#include <assert.h>
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -317,7 +317,7 @@ uint64_t checked(struct position position) {
 }
 
 struct move *get_moves(struct position position) {
-	if (checked(position))) {
+	if (checked(position)) {
 		// check movegen
 	} else {
 		// no-check movegen
@@ -328,27 +328,54 @@ struct move *get_moves(struct position position) {
 /* search -----------------------------------------------------------------------------------------------------------*/
 
 
+/* self-testing */
+
+void fail_test(size_t line) {
+	fprintf(stderr, "self-test \33[0;1;31mfailed\33[0m @ line \33[0;1;31m%zd\33[0m!\n", line);
+	abort();
+}
+
+#define TEST(x) if (!(x)) fail_test(__LINE__)
+
+void self_test(void) {
+	puts("running self-tests");
+
+	TEST(popcount(UINT64_C(0)) == 0);
+	TEST(popcount(UINT64_MAX) == 64);
+	TEST(popcount(popcount_c1) == 32);
+	TEST(popcount(popcount_c2) == 32);
+	TEST(popcount(popcount_c4) == 32);
+	TEST(popcount(popcount_c16) == 32);
+	TEST(popcount(popcount_c32) == 32);
+	TEST(popcount(UINT64_C(1127298329768902696)) == 31);
+	TEST(popcount(UINT64_C(12157665459056928801)) == 28);
+
+	struct position test;
+
+	test = parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
+	for (size_t i=0; i<12; i++) {
+		TEST(test.piece[i] == startpos.piece[i]);
+	}
+	TEST(test.reversible_plies == startpos.reversible_plies);
+	TEST(test.mover == startpos.mover);
+
+	test = parsefen("nr6/p1p1p1p1/P1P1P1PR/1B1q1N2/2bp1bkN/Bp1PQprp/RP3P1P/1n5K w - - 34 1");
+	TEST(test.reversible_plies == 34);
+	TEST(test.mover == 0);
+
+	test = parsefen("rnbQKbnr/8/8/pppppppp/PPPPPPPP/8/8/RNBqkBNR b - - 26 1");
+	TEST(test.reversible_plies == 26);
+	TEST(test.mover == 1);
+
+	puts("\33[0;32mall self-tests passed\33[0m");
+}
+
+
 /* main function & user interface -----------------------------------------------------------------------------------*/
 
 const size_t UCI_INPUT_SIZE = 10000;
 
 int main(void) {
-	assert(popcount(UINT64_C(0)) == 0);
-	assert(popcount(UINT64_MAX) == 64);
-	assert(popcount(popcount_c1) == 32);
-	assert(popcount(popcount_c2) == 32);
-	assert(popcount(popcount_c4) == 32);
-	assert(popcount(popcount_c16) == 32);
-	assert(popcount(popcount_c32) == 32);
-	assert(popcount(UINT64_C(1127298329768902696)) == 31);
-	assert(popcount(UINT64_C(12157665459056928801)) == 28);
-
-	struct position test = parsefen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w - - 0 1");
-	for (size_t i=0; i<12; i++) {
-		assert(test.piece[i] == startpos.piece[i]);
-	}
-	assert(test.reversible_plies == startpos.reversible_plies);
-
 	fputs(
 		"\33[0;3;31mlizhi " LIZHI_VERSION "\33[0m by \33[32mthe\33[36mrainy\33[34mdev\33[0m\n"
 		"This program is a text-only shatranj engine, but tries to be nice to work with even without a GUI.\n"
@@ -399,6 +426,7 @@ int main(void) {
 				" \33[1;32muci\33[0m    - enter UCI mode\n"
 				" \33[1;34mprint\33[0m  - print the current position\n"
 				" \33[1;34mfen\33[0m    - parse fen into current position\n"
+				" \33[1;35mtest\33[0m   - run self-tests\n"
 				" \33[1;35mferz\33[0m   - print ferz attacks\n"
 				" \33[1;35mrook\33[0m   - print rook attacks\n"
 				" \33[1;35malfil\33[0m  - print alfil attacks\n"
@@ -418,6 +446,10 @@ int main(void) {
 
 		else if (!strcmp(token, "fen")) {
 			position = parsefen(input);
+		}
+
+		else if (!strcmp(token, "test")) {
+			self_test();
 		}
 
 		else if (!strcmp(token, "ferz")) {
