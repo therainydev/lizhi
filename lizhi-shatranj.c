@@ -323,10 +323,10 @@ uint64_t checked(struct position position) {
 }
 
 struct move *get_moves(struct position position) {
+	struct move *moves = malloc(MAX_MOVES*sizeof(struct move *));
 	if (checked(position)) {
-		// check movegen
+		fprintf(stderr, "\33[0;1;31mnot implemented\33[0m @ line \33[0;1;31m%d\33[0m\n", __LINE__);
 	} else {
-		// no-check movegen
 	}
 }
 
