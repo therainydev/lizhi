@@ -93,8 +93,8 @@ const struct position empty = {
 	.mover = 0
 };
 
-void print_bitboard(uint64_t bitboard, FILE *stream) {
-	fprintf(stream, "bitboard = 0x%016" PRIx64 "\n", bitboard);
+void print_bitboard(uint64_t bitboard) {
+	printf("bitboard = 0x%016" PRIx64 "\n", bitboard);
 	size_t i = 64;
 	while (i --> 0) {
 		putchar(bitboard >> i & 1 ? '*':'.');
@@ -104,9 +104,8 @@ void print_bitboard(uint64_t bitboard, FILE *stream) {
 	}
 }
 
-void print_position(struct position p, FILE *stream) {
-	fprintf(
-		stream,
+void print_position(struct position p) {
+	printf(
 		"struct position p = {\n"
 		"	piece = {\n"
 		"		UINT64_C(0x%016" PRIx64 "), // WK\n"
@@ -397,12 +396,11 @@ void self_test(void) {
 const size_t UCI_INPUT_SIZE = 10000;
 
 int main(void) {
-	fputs(
+	puts(
 		"\33[0;3;31mlizhi " LIZHI_VERSION "\33[0m by \33[32mthe\33[36mrainy\33[34mdev\33[0m\n"
 		"This program is a text-only shatranj engine, but tries to be nice to work with even without a GUI.\n"
 		"If you want to know how to use this program, enter 'help'.\n"
-		"If you need to work directly with UCI, enter 'uci'.\n",
-		stdout
+		"If you need to work directly with UCI, enter 'uci'."
 	);
 
 	struct position position = startpos;
@@ -417,29 +415,29 @@ int main(void) {
 		}
 		fputs(" \33[3;31mlizhi \33[35m-> \33[34m", stdout);
 		if (fgets(orig, UCI_INPUT_SIZE, stdin) == NULL) {
-			fputs("\n\33[0;1mbye\33[0m\n", stdout);
+			puts("\n\33[0;1mbye\33[0m\n");
 			exit(0);
 		}
 		fputs("\33[0m", stdout);
 
 		token = strsep(&input, " \n\t");
 		if (token == NULL) {
-			fputs("please enter a valid command\n", stdout);
+			puts("please enter a valid command\n");
 			free(orig);
 			continue;
 		}
 
 		if (!strcmp(token, "quit")) {
-			fputs("\33[1mbye\33[0m\n", stdout);
+			puts("\33[1mbye\33[0m");
 			exit(0);
 		}
 
 		else if (!strcmp(token, "cat")) {
-			fputs("ᓚᘏᗢ\n", stdout);
+			puts("ᓚᘏᗢ");
 		}
 
 		else if (!strcmp(token, "help")) {
-			fputs(
+			puts(
 				"\33[1;4;32mcommands\33[0m\n"
 				" \33[1;32mquit\33[0m   - exit the engine\n"
 				" \33[1;32mcat\33[0m    - print a cat\n"
@@ -452,8 +450,7 @@ int main(void) {
 				" \33[1;35mrook\33[0m   - print rook attacks\n"
 				" \33[1;35malfil\33[0m  - print alfil attacks\n"
 				" \33[1;35mknight\33[0m - print knight attacks\n"
-				" \33[1;35mpawn\33[0m   - print pawn attacks\n",
-				stdout
+				" \33[1;35mpawn\33[0m   - print pawn attacks"
 			);
 		}
 
@@ -462,7 +459,7 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "print")) {
-			print_position(position, stdout);
+			print_position(position);
 		}
 
 		else if (!strcmp(token, "fen")) {
@@ -474,7 +471,7 @@ int main(void) {
 		}
 
 		else if (!strcmp(token, "ferz")) {
-			print_bitboard(get_ferz_attacks(position.piece[WF+6*position.mover]), stdout);
+			print_bitboard(get_ferz_attacks(position.piece[WF+6*position.mover]));
 		}
 
 		else if (!strcmp(token, "rook")) {
@@ -482,19 +479,19 @@ int main(void) {
 			for (size_t i=0; i<12; i++) {
 				obstructions |= position.piece[i];
 			}
-			print_bitboard(get_rook_attacks(position.piece[WR+6*position.mover], obstructions), stdout);
+			print_bitboard(get_rook_attacks(position.piece[WR+6*position.mover], obstructions));
 		}
 
 		else if (!strcmp(token, "alfil")) {
-			print_bitboard(get_alfil_attacks(position.piece[WA+6*position.mover]), stdout);
+			print_bitboard(get_alfil_attacks(position.piece[WA+6*position.mover]));
 		}
 
 		else if (!strcmp(token, "knight")) {
-			print_bitboard(get_knight_attacks(position.piece[WN+6*position.mover]), stdout);
+			print_bitboard(get_knight_attacks(position.piece[WN+6*position.mover]));
 		}
 
 		else if (!strcmp(token, "pawn")) {
-			print_bitboard(get_pawn_attacks(position.piece[WP+6*position.mover], position.mover), stdout);
+			print_bitboard(get_pawn_attacks(position.piece[WP+6*position.mover], position.mover));
 		}
 
 		else {
@@ -505,12 +502,11 @@ int main(void) {
 	}
 
 	UCI:
-	fputs(
+	puts(
 		"uci\n"
 		"id name lizhi " LIZHI_VERSION "\n"
 		"option name UCI_Variant type combo default shatranj var shatranj\n"
-		"uciok\n",
-		stdout
+		"uciok"
 	);
 	exit(1);
 	while(1) {
