@@ -241,11 +241,6 @@ const uint64_t EDGE_FILES     = A_FILE | H_FILE;
 
 const size_t MAX_MOVES = 80;
 
-struct move {
-	uint64_t start;
-	uint64_t end;
-};
-
 uint64_t get_ferz_attacks(uint64_t ferz) {
 	uint64_t ferz_a = ferz & A_FILE;
 	ferz = ferz ^ ferz_a;
@@ -350,8 +345,18 @@ uint64_t checked(struct position position) {
 	}
 }
 
-struct move *get_moves(struct position position) {
-	struct move *moves = malloc(MAX_MOVES*sizeof(struct move *));
+/*
+┌────────┬─ move bits ─┬────────┐
+│ 012345 │ 6789ab      │ cdef   │
+│ start  │ destination │ unused │
+└────────┴─────────────┴────────┘ */
+
+struct position make_move(struct position position, uint16_t move) {
+	
+}
+
+uint16_t *get_moves(struct position position) {
+	uint16_t *moves = malloc(MAX_MOVES*sizeof(uint16_t));
 	if (checked(position)) {
 		fprintf(stderr, "\33[0;1;31mnot implemented\33[0m @ line \33[0;1;31m%d\33[0m\n", __LINE__);
 	} else {
