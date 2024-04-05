@@ -226,21 +226,6 @@ struct position parsefen(char *fen) {
 }
 
 
-/* evaluation ───────────────────────────────────────────────────────────────────────────────────────────────────────*/
-
-const int64_t MATE_VALUE = INT64_C(1000000);
-
-const int64_t piece_values[] = { MATE_VALUE, 144, 657, 77, 415, 78 };
-
-int64_t eval_material(struct position position) {
-	int64_t total = 0;
-	for (size_t i=0; i<6; i++) {
-		total += (popcount(position.piece[i]) - popcount(position.piece[i+6])) * piece_values[i];
-	}
-	return total;
-}
-
-
 /* move generation ──────────────────────────────────────────────────────────────────────────────────────────────────*/
 
 const uint64_t A_FILE = UINT64_C(0x8080808080808080);
