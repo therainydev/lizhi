@@ -104,7 +104,7 @@ void ttt_solver_interface(void) {
 
 /* board ────────────────────────────────────────────────────────────────────────────────────────────────────────────*/
 
-enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP };
+enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP, NO_PIECE };
 
 struct position {
 	uint64_t piece[12];
@@ -350,6 +350,16 @@ uint64_t checked(struct position position) {
 │   fedc │      ba9867 │ 543210 │
 │ unused │ destination │ start  │
 └────────┴─────────────┴────────┘ */
+
+size_t get_piece_index(struct position position, uint64_t square) {
+	for (size_t i=0; i != NO_PIECE; i++) {
+		if (position.piece[i] & square) {
+			return i;
+		}
+	}
+	return NO_PIECE;
+}
+
 struct position make_move(struct position position, uint16_t move) {
 
 }
