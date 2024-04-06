@@ -347,10 +347,9 @@ uint64_t checked(struct position position) {
 
 /*
 ┌────────┬─ move bits ─┬────────┐
-│ 012345 │ 6789ab      │ cdef   │
-│ start  │ destination │ unused │
+│   fedc │      ba9867 │ 543210 │
+│ unused │ destination │ start  │
 └────────┴─────────────┴────────┘ */
-
 struct position make_move(struct position position, uint16_t move) {
 
 }
