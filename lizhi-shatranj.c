@@ -3,7 +3,7 @@
 cc -Ofast -march=native $0
 exit
 
-
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
 ┌─────────────────────────────────────────────────┐
 │                    🏳️‍🌈 · 🏳️‍⚧️                     │
@@ -29,6 +29,20 @@ warranties of merchantability, fitness for a particular purpose, and noninfringe
 copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or
 otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
 
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+total: 589 lines, in one file!
+table of contents:
+- preprocessor directives: 52
+- non-shatranj-specific functions: 62
+- tic-tac-toe experiment: 74
+- board definitions: 116
+- movegen definitions: 157
+- board functions: 180
+- movegen functions: 272
+- self-testing: 407
+- user interface: 467
+
 ᓚᘏᗢ
 
 */
@@ -37,7 +51,6 @@ otherwise, arising from, out of, or in connection with the software or the use o
 
 /* preprocessor stuff ───────────────────────────────────────────────────────────────────────────────────────────────*/
 
-//#include <assert.h>
 #include <ctype.h>
 #include <inttypes.h>
 #include <stdio.h>
@@ -141,6 +154,29 @@ struct position parsefen(char *fen);
 
 
 
+/* move generation definitions ──────────────────────────────────────────────────────────────────────────────────────*/
+
+const uint64_t A_FILE = UINT64_C(0x8080808080808080);
+const uint64_t B_FILE = UINT64_C(0x4040404040404040);
+const uint64_t G_FILE = UINT64_C(0x0202020202020202);
+const uint64_t H_FILE = UINT64_C(0x0101010101010101);
+
+const uint64_t A_OR_B_FILE = A_FILE | B_FILE;
+const uint64_t G_OR_H_FILE = G_FILE | H_FILE;
+
+const uint64_t CENTER_4_FILES = UINT64_C(0x3c3c3c3c3c3c3c3c);
+const uint64_t EDGE_FILES     = A_FILE | H_FILE;
+
+const size_t MAX_MOVES = 80;
+
+uint64_t get_ferz_attacks(uint64_t ferz);
+uint64_t get_rook_attacks(uint64_t rook, uint64_t obstructions);
+uint64_t get_alfil_attacks(uint64_t alfil);
+uint64_t get_knight_attacks(uint64_t knight);
+uint64_t get_pawn_attacks(uint64_t pawn, int8_t mover);
+
+
+
 /* board functions ──────────────────────────────────────────────────────────────────────────────────────────────────*/
 
 void print_bitboard(uint64_t bitboard) {
@@ -230,29 +266,6 @@ struct position parsefen(char *fen) {
 	}
 	return result;
 }
-
-
-
-/* move generation definitions ──────────────────────────────────────────────────────────────────────────────────────*/
-
-const uint64_t A_FILE = UINT64_C(0x8080808080808080);
-const uint64_t B_FILE = UINT64_C(0x4040404040404040);
-const uint64_t G_FILE = UINT64_C(0x0202020202020202);
-const uint64_t H_FILE = UINT64_C(0x0101010101010101);
-
-const uint64_t A_OR_B_FILE = A_FILE | B_FILE;
-const uint64_t G_OR_H_FILE = G_FILE | H_FILE;
-
-const uint64_t CENTER_4_FILES = UINT64_C(0x3c3c3c3c3c3c3c3c);
-const uint64_t EDGE_FILES     = A_FILE | H_FILE;
-
-const size_t MAX_MOVES = 80;
-
-uint64_t get_ferz_attacks(uint64_t ferz);
-uint64_t get_rook_attacks(uint64_t rook, uint64_t obstructions);
-uint64_t get_alfil_attacks(uint64_t alfil);
-uint64_t get_knight_attacks(uint64_t knight);
-uint64_t get_pawn_attacks(uint64_t pawn, int8_t mover);
 
 
 
