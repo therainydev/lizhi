@@ -1,6 +1,6 @@
 # define LIZHI_VERSION "shatranj prototype" /*
 # self-compile (O_o)
-cc -Ofast -march=native $0
+cc -Ofast -march=native -o lizhi-shatranj $0
 exit
 
 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
