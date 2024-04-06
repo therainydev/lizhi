@@ -4,6 +4,11 @@ cc -Ofast -march=native $0
 exit
 
 |* introduction ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Lizhi will not be my primary focus anymore since the author of Prolix managed to turn this whole thing into an
+extremely fast-paced race to beat Fairy-Stockfish at shatranj.
+For now, my primary focus will instead be on ShatranjFish.
+
 ┌─────────────────────────────────────────────────┐
 │                    🏳️‍🌈 · 🏳️‍⚧️                     │
 │         lizhi shatranj engine by rainy          │
