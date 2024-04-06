@@ -67,7 +67,7 @@ uint64_t popcount(uint64_t n) {
 // 543
 // 210
 
-const uint16_t *ttt_wins = {
+const uint16_t ttt_wins[] = {
 	UINT16_C(0b111000000), UINT16_C(0b111000), UINT16_C(0b111),
 	UINT16_C(0b100100100), UINT16_C(0b10010010), UINT16_C(0b1001001),
 	UINT16_C(0b100010001), UINT16_C(0b1010100)
