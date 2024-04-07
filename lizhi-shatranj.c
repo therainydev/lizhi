@@ -175,6 +175,25 @@ uint64_t get_alfil_attacks(uint64_t alfil);
 uint64_t get_knight_attacks(uint64_t knight);
 uint64_t get_pawn_attacks(uint64_t pawn, int8_t mover);
 
+uint64_t checked(struct position position);
+size_t get_piece_index(struct position position, uint64_t square);
+struct position make_move(struct position position, uint16_t move);
+uint16_t *get_moves(struct position position);
+
+
+
+/* self-testing definitions ─────────────────────────────────────────────────────────────────────────────────────────*/
+
+void fail_test(size_t line);
+#define TEST(x) if (!(x)) fail_test(__LINE__)
+void self_test(void);
+
+
+
+/* user interface definitions */
+
+const size_t UCI_INPUT_SIZE = 10000;
+
 
 
 /* board functions ──────────────────────────────────────────────────────────────────────────────────────────────────*/
@@ -428,8 +447,6 @@ void fail_test(size_t line) {
 	abort();
 }
 
-#define TEST(x) if (!(x)) fail_test(__LINE__)
-
 void self_test(void) {
 	puts("running self-tests");
 
@@ -482,8 +499,6 @@ void self_test(void) {
 
 
 /* main function & user interface ───────────────────────────────────────────────────────────────────────────────────*/
-
-const size_t UCI_INPUT_SIZE = 10000;
 
 int main(void) {
 	puts(
