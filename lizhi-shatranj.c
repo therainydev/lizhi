@@ -391,7 +391,24 @@ size_t get_piece_index(struct position position, uint64_t square) {
 }
 
 struct position make_move(struct position position, uint16_t move) {
-
+	size_t start_index = get_piece_index(position, 1 << (move & 0x3f));
+	size_t end_index = get_piece_index(position, 1 << (move >> 6 & 0x3f));
+	if (start_index == NO_PIECE) {
+		fprintf(stderr, "\33[0;1;31minternal error\33[0m @ line \33[0;1;31m%d\33[0m: invalid move given\n", __LINE__);
+	}
+	if (position.mover) {
+		position.mover = 0;
+	} else {
+		position.mover = 1;
+	}
+	if (position.piece[end_index] & (1 << (move >> 6 & 0x3f))) {
+		position.reversible_plies = 0;
+	} else {
+		position.reversible_plies++;
+	}
+	position.piece[start_index] &= ~(1 << (move & 0x3f));
+	position.piece[end_index] |= 1 << (move >> 6 & 0x3f);
+	return position;
 }
 
 uint16_t *get_moves(struct position position) {
