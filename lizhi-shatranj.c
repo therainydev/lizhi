@@ -29,20 +29,6 @@ warranties of merchantability, fitness for a particular purpose, and noninfringe
 copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or
 otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
 
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
-total: 589 lines, in one file!
-table of contents:
-- preprocessor directives: 52
-- non-shatranj-specific functions: 62
-- tic-tac-toe experiment: 74
-- board definitions: 116
-- movegen definitions: 157
-- board functions: 180
-- movegen functions: 272
-- self-testing: 407
-- user interface: 467
-
 ᓚᘏᗢ
 
 */
