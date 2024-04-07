@@ -71,48 +71,6 @@ uint64_t popcount(uint64_t n) {
 
 
 
-/* tic-tac-toe solver: a side project to experiment with search ─────────────────────────────────────────────────────*/
-
-// 876
-// 543
-// 210
-
-const uint16_t ttt_wins[] = {
-	UINT16_C(0b111000000), UINT16_C(0b111000), UINT16_C(0b111),
-	UINT16_C(0b100100100), UINT16_C(0b10010010), UINT16_C(0b1001001),
-	UINT16_C(0b100010001), UINT16_C(0b1010100)
-};
-
-struct ttt_board {
-	uint16_t x;
-	uint16_t o;
-	int8_t mover;
-};
-
-struct ttt_solution {
-	uint16_t move;
-	int8_t winner;
-};
-
-struct ttt_solution ttt_solve(struct ttt_board board) {
-}
-
-int8_t ttt_win(struct ttt_board board) {
-	for (size_t i=0; i<8; i++) {
-		if (ttt_wins[i] == board.x) return 1;
-		if (ttt_wins[i] == board.o) return -1;
-	}
-	return 0;
-}
-
-void ttt_solver_interface(void) {
-	struct ttt_board board;
-	board.x = board.o = UINT16_C(0);
-	board.mover = 1;
-}
-
-
-
 /* board definitions ────────────────────────────────────────────────────────────────────────────────────────────────*/
 
 enum pieces { WK, WF, WR, WA, WN, WP, BK, BF, BR, BA, BN, BP, NO_PIECE };
