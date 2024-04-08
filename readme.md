@@ -17,3 +17,4 @@ lizhi (荔枝) is a work-in-progress shatranj engine, now written in Rust.
 
 ## Todo
 - Make it play shatranj.
+- Make it play chess.
