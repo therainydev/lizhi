@@ -12,37 +12,6 @@ exit
 │ you can contact me at: therainy.dev@tutanota.de │
 └─────────────────────────────────────────────────┘
 
-
-
-copyright (c) 2024 rainy (mit license)
-
-permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-documentation files ("the software"), to deal in the software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software, and to permit
-persons to whom the software is furnished to do so, subject to the following conditions:
-
-the above copyright notice and this permission notice shall be included in all copies or substantial portions of the
-software.
-
-the software is provided "as is", without warranty of any kind, express or implied, including but not limited to the
-warranties of merchantability, fitness for a particular purpose, and noninfringement. in no event shall the authors or
-copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or
-otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
-
-───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-
-total: 589 lines, in one file!
-table of contents:
-- preprocessor directives: 52
-- non-shatranj-specific functions: 62
-- tic-tac-toe experiment: 74
-- board definitions: 116
-- movegen definitions: 157
-- board functions: 180
-- movegen functions: 272
-- self-testing: 407
-- user interface: 467
-
 ᓚᘏᗢ
 
 */
@@ -67,48 +36,6 @@ uint64_t popcount(uint64_t n) {
 		n &= n - 1;
 	}
 	return count;
-}
-
-
-
-/* tic-tac-toe solver: a side project to experiment with search ─────────────────────────────────────────────────────*/
-
-// 876
-// 543
-// 210
-
-const uint16_t ttt_wins[] = {
-	UINT16_C(0b111000000), UINT16_C(0b111000), UINT16_C(0b111),
-	UINT16_C(0b100100100), UINT16_C(0b10010010), UINT16_C(0b1001001),
-	UINT16_C(0b100010001), UINT16_C(0b1010100)
-};
-
-struct ttt_board {
-	uint16_t x;
-	uint16_t o;
-	int8_t mover;
-};
-
-struct ttt_solution {
-	uint16_t move;
-	int8_t winner;
-};
-
-struct ttt_solution ttt_solve(struct ttt_board board) {
-}
-
-int8_t ttt_win(struct ttt_board board) {
-	for (size_t i=0; i<8; i++) {
-		if (ttt_wins[i] == board.x) return 1;
-		if (ttt_wins[i] == board.o) return -1;
-	}
-	return 0;
-}
-
-void ttt_solver_interface(void) {
-	struct ttt_board board;
-	board.x = board.o = UINT16_C(0);
-	board.mover = 1;
 }
 
 
