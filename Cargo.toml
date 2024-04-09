@@ -1,9 +1,12 @@
 [package]
 name = "lizhi"
 version = "0.1.0"
+authors = ["Rain <therainy.dev@tutanota.de>"]
+description = "work-in-progress UCI chess and shatranj engine"
+repository = "https://github.com/therainydev/lizhi"
+readme = "readme.md"
+license = "mit"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 cozy_chess = "^0.3.4"
