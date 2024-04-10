@@ -9,4 +9,4 @@ license = "mit"
 edition = "2021"
 
 [dependencies]
-cozy_chess = "^0.3.4"
+cozy-chess = "^0.3.4"
