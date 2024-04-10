@@ -13,7 +13,9 @@ lizhi (荔枝) is a work-in-progress chess and shatranj engine, now written in R
 
 
 ## Features
-- Prints UCI message.
+- Half-done UCI support.
+- Material-counting (1, 3, 3, 5, 7) evaluation.
+- Half-working simple negamax search.
 
 ## Todo
 - Make it play shatranj.
