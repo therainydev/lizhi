@@ -20,7 +20,7 @@ fn main() {
 				println!(concat!(
 					"uci\n",
 					"id name lizhi 0.1.0\n",
-					"option name UCI_Variant type combo default shatranj var shatranj\n",
+					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
 				)),
 			_ => println!("\x1b[0;31minvalid command\x1b[0m"),
