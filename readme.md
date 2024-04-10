@@ -1,6 +1,6 @@
 <div align="center">
 
-# lizhi shatranj engine
+# lizhi chess and shatranj engine
 
 ![License](https://img.shields.io/github/license/therainydev/lizhi)
 
@@ -9,7 +9,7 @@
 
 </div>
 
-lizhi (荔枝) is a work-in-progress shatranj engine, now written in Rust.
+lizhi (荔枝) is a work-in-progress chess and shatranj engine, now written in Rust.
 
 
 ## Features
@@ -17,3 +17,4 @@ lizhi (荔枝) is a work-in-progress shatranj engine, now written in Rust.
 
 ## Todo
 - Make it play shatranj.
+- Make it play chess.
