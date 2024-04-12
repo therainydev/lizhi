@@ -1,3 +1,5 @@
+pub mod search;
+
 fn main() {
 	print!(concat!(
 		"\x1b[0;3;31mlizhi 0.1.0\x1b[0m by \x1b[32mthe\x1b[36mrainy\x1b[34mdev\x1b[0m\n",

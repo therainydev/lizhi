@@ -1,35 +1,57 @@
 use std::cmp;
+use std::ops::Not;
 use cozy_chess;
 
-fn evaluate(position: Board) -> u64 {
+const MATE_VALUE:i64 = 1000000;
+
+fn evaluate(position: cozy_chess::Board) -> i64 {
 	1000 * (
-		position.colored_pieces(position.side_to_move(), Piece::Pawn)
-		+ 3 * position.colored_pieces(position.side_to_move(), Piece::Knight)
-		+ 3 * position.colored_pieces(position.side_to_move(), Piece::Bishop)
-		+ 5 * position.colored_pieces(position.side_to_move(), Piece::Rook)
-		+ 9 * position.colored_pieces(position.side_to_move(), Piece::Queen)
-		- position.colored_pieces(position.side_to_move.not(), Piece::Pawn)
-		- 3 * position.colored_pieces(position.side_to_move.not(), Piece::Knight)
-		- 3 * position.colored_pieces(position.side_to_move.not(), Piece::Bishop)
-		- 5 * position.colored_pieces(position.side_to_move.not(), Piece::Rook)
-		- 9 * position.colored_pieces(position.side_to_move.not(), Piece::Queen)
+		i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Pawn).len())
+		+ 3 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Knight).len())
+		+ 3 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Bishop).len())
+		+ 5 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Rook).len())
+		+ 9 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Queen).len())
+		- i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Pawn).len())
+		- 3 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Knight).len())
+		- 3 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Bishop).len())
+		- 5 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Rook).len())
+		- 9 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Queen).len())
 	)
 }
 
-fn negamax(node: Board, depth: u64, evaluate: fn(Board)->u64) -> u64 {
-	let mate_value = 1000000;
-	if (node.status() == GameStatus::Won) {
-		-mate_value
+fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> i64 {
+	if node.status() == cozy_chess::GameStatus::Won {
+		return -MATE_VALUE;
 	}
-	if (node.status() == GameStatus::Drawn) {
-		0
+	if node.status() == cozy_chess::GameStatus::Drawn {
+		return 0;
 	}
-	if (depth == 0) {
-		evaluate(node)
+	if depth == 0 {
+		return evaluate(node);
 	}
-	let mut evaluation = -2 * mate_value;
-	for each child of node {
-		evaluation = cmp::max(evaluation, -negamax(child, depth-1, evaluate));
-	}
+
+	let mut evaluation = -2 * MATE_VALUE;
+	node.generate_moves(|moves| {
+		for mv in moves {
+			let mut new_node = node.clone();
+			new_node.play(mv);
+			evaluation = cmp::max(evaluation, -negamax(new_node, depth-1, evaluate));
+		}
+		false
+	});
 	evaluation
+}
+
+fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> (i64, cozy_chess::Move) {
+	let mut evaluation = -2 * MATE_VALUE;
+	let mut best;
+	node.generate_moves(|moves| {
+		for mv in moves {
+			let mut new_node = node.clone();
+			new_node.play(mv);
+			let node_evaluation = -negamax(new_node, depth-1, evaluate);
+		}
+		false
+	});
+	(evaluation, best)
 }
