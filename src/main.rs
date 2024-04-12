@@ -1,3 +1,5 @@
+use cozy_chess;
+
 pub mod search;
 
 fn main() {
@@ -8,23 +10,49 @@ fn main() {
 		"If you need to work directly with UCI, enter 'uci'.\n"
 	));
 
+	let mut position = cozy_chess::Board::default();
+
 	loop {
 		print!("");
 
 		let mut input = String::new();
 		std::io::stdin().read_line(&mut input).expect("failed to read input");
 
-		match input.trim() {
-			"cat" => println!("ᓚᘏᗢ"),
-			"isready" => println!("readyok"),
-			"quit" => break,
-			"uci" =>
+		let mut command = input.split_whitespace();
+
+		match command.next() {
+			Some("cat")     => println!("ᓚᘏᗢ"),
+			Some("isready") => println!("readyok"),
+			Some("quit")    => break,
+			Some("uci")     => 
 				println!(concat!(
 					"uci\n",
 					"id name lizhi 0.1.0\n",
 					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
 				)),
+			Some("position") => {
+				match command.next() {
+					Some("startpos") => {
+						position = cozy_chess::Board::default();
+						match command.next() {
+							Some("moves") => {
+								
+							},
+							None => (),
+							_ => println!("\x1b[0;31minvalid command\x1b[0m"),
+						}
+					},
+					None => {
+						println!("\x1b[0;31mno position specified\x1b[0m");
+						continue;
+					},
+					_ => {
+						println!("\x1b[0;31minvalid command\x1b[0m");
+					},
+				}
+			},
+			Some("go") => todo!(),
 			_ => println!("\x1b[0;31minvalid command\x1b[0m"),
 		}
 	}
