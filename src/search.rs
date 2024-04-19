@@ -4,7 +4,7 @@ use cozy_chess;
 
 const MATE_VALUE:i64 = 1000000;
 
-fn evaluate(position: cozy_chess::Board) -> i64 {
+pub fn evaluate(position: cozy_chess::Board) -> i64 {
 	1000 * (
 		i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Pawn).len())
 		+ 3 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Knight).len())
@@ -42,7 +42,7 @@ fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)-
 	evaluation
 }
 
-fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> (i64, cozy_chess::Move) {
+pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> (i64, cozy_chess::Move) {
 	let mut evaluation = -2 * MATE_VALUE;
 	let mut best = cozy_chess::Move {from: cozy_chess::Square::A1, to: cozy_chess::Square::A1, promotion: None};
 	node.generate_moves(|moves| {
