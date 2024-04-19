@@ -17,7 +17,9 @@ fn main() {
 		print!("");
 
 		let mut input = String::new();
-		std::io::stdin().read_line(&mut input).expect("failed to read input");
+		if std::io::stdin().read_line(&mut input).expect("failed to read input") == 0 {
+			break;
+		}
 
 		let mut command = input.split_whitespace();
 
