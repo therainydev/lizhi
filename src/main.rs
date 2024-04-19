@@ -34,7 +34,7 @@ fn main() {
 
 			// display state
 			Some("show") => {
-				todo!();
+				ui::show(position.clone());
 			},
 			Some("showfen") => {
 				todo!();
