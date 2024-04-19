@@ -65,7 +65,9 @@ fn main() {
 			},
 
 			// search
-			Some("go") => todo!(),
+			Some("go") => {
+				let (evaluation, best) = search::bestmove(position, 4, search::evaluate);
+			},
 
 			// quitting
 			Some("quit") => break,
