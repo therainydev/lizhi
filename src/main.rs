@@ -1,6 +1,7 @@
 use cozy_chess;
 
 pub mod search;
+pub mod ui;
 
 fn main() {
 	print!(concat!(
@@ -21,16 +22,25 @@ fn main() {
 		let mut command = input.split_whitespace();
 
 		match command.next() {
+			// constant output
 			Some("cat")     => println!("ᓚᘏᗢ"),
 			Some("isready") => println!("readyok"),
-			Some("quit")    => break,
-			Some("uci")     => 
-				println!(concat!(
+			Some("uci")     => println!(concat!(
 					"uci\n",
 					"id name lizhi 0.1.0\n",
 					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
 				)),
+
+			// display state
+			Some("show") => {
+				todo!();
+			},
+			Some("showfen") => {
+				todo!();
+			},
+
+			// mutate state
 			Some("position") => {
 				match command.next() {
 					Some("startpos") => {
@@ -52,7 +62,15 @@ fn main() {
 					},
 				}
 			},
+
+			// search
 			Some("go") => todo!(),
+
+			// quitting
+			Some("quit") => break,
+			Some("exit") => break,
+
+			// invalid command
 			_ => println!("\x1b[0;31minvalid command\x1b[0m"),
 		}
 	}
