@@ -35,7 +35,7 @@ fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)-
 		for mv in moves {
 			let mut new_node = node.clone();
 			new_node.play(mv);
-			evaluation = cmp::max(evaluation, -negamax(new_node, depth-1, evaluate));
+			evaluation = cmp::max(evaluation, -negamax(new_node, depth-1, evaluate) * 9 / 10);
 		}
 		false
 	});
