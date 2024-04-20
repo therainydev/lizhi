@@ -48,7 +48,6 @@ fn main() {
 						position = cozy_chess::Board::default();
 						match command.next() {
 							Some("moves") => {
-								
 							},
 							None => (),
 							_ => println!("\x1b[0;31minvalid command\x1b[0m"),
@@ -66,7 +65,9 @@ fn main() {
 
 			// search
 			Some("go") => {
-				let (evaluation, best) = search::bestmove(position, 4, search::evaluate);
+				let (evaluation, best) = search::bestmove(position.clone(), 5, search::evaluate);
+				println!("info depth 5 score cp {}", evaluation/10);
+				println!("bestmove {}", best);
 			},
 
 			// quitting
