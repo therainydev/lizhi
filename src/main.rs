@@ -74,8 +74,8 @@ fn main() {
 
 			// searching
 			Some("go") => {
-				let (evaluation, best) = search::bestmove(position.clone(), 5, search::evaluate);
-				println!("info depth 5 score cp {}", evaluation/10);
+				let (evaluation, best) = search::bestmove(position.clone(), 4, search::evaluate);
+				println!("info depth 4 score cp {}", evaluation/10);
 				println!("bestmove {}", best);
 			},
 
