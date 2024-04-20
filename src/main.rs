@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use cozy_chess;
 
 pub mod search;
@@ -48,6 +49,14 @@ fn main() {
 						position = cozy_chess::Board::default();
 						match command.next() {
 							Some("moves") => {
+								let mut move_str = command.next();
+								while move_str != None {
+									match cozy_chess::Move::from_str(move_str.unwrap()) {
+										Ok(v) => position.play(v),
+										Err(_) => println!("\x1b[0;31minvalid move\x1b[0m"),
+									}
+									move_str = command.next();
+								}
 							},
 							None => (),
 							_ => println!("\x1b[0;31minvalid command\x1b[0m"),
