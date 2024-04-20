@@ -1,4 +1,3 @@
-use std::str::FromStr;
 use cozy_chess;
 
 pub mod search;
@@ -51,7 +50,7 @@ fn main() {
 							Some("moves") => {
 								let mut move_str = command.next();
 								while move_str != None {
-									match cozy_chess::Move::from_str(move_str.unwrap()) {
+									match cozy_chess::util::parse_uci_move(&position, move_str.unwrap()) {
 										Ok(v) => position.play(v),
 										Err(_) => println!("\x1b[0;31minvalid move\x1b[0m"),
 									}
@@ -84,7 +83,7 @@ fn main() {
 			Some("exit") => break,
 
 			// invalid command
-			_ => println!("\x1b[0;31minvalid command\x1b[0m"),
+			_ => println!("info error \x1b[0;31minvalid command\x1b[0m"),
 		}
 	}
 }
