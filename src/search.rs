@@ -1,31 +1,31 @@
 use std::ops::Not;
 use cozy_chess;
 
-const MIN_MATE_VALUE:i64 =  900000;
-const MATE_VALUE:i64     = 1000000;
+const MIN_MATE_VALUE:i32 =  900000;
+const MATE_VALUE:i32     = 1000000;
 
-pub fn evaluate(position: cozy_chess::Board) -> i64 {
+pub fn evaluate(position: cozy_chess::Board) -> i32 {
 	1000 * (
-		i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Pawn).len())
-		+ 3 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Knight).len())
-		+ 3 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Bishop).len())
-		+ 5 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Rook).len())
-		+ 9 * i64::from(position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Queen).len())
-		- i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Pawn).len())
-		- 3 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Knight).len())
-		- 3 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Bishop).len())
-		- 5 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Rook).len())
-		- 9 * i64::from(position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Queen).len())
+		position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Pawn).len() as i32
+		+ 3 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Knight).len() as i32
+		+ 3 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Bishop).len() as i32
+		+ 5 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Rook).len() as i32
+		+ 9 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Queen).len() as i32
+		- position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Pawn).len() as i32
+		- 3 * position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Knight).len() as i32
+		- 3 * position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Bishop).len() as i32
+		- 5 * position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Rook).len() as i32
+		- 9 * position.colored_pieces(position.side_to_move().not(), cozy_chess::Piece::Queen).len() as i32
 	)
 }
 
 fn negamax(
 	node: cozy_chess::Board,
 	depth: u64,
-	mut alpha: i64,
-	beta: i64,
-	evaluate: fn(cozy_chess::Board)->i64
-) -> i64 {
+	mut alpha: i32,
+	beta: i32,
+	evaluate: fn(cozy_chess::Board)->i32
+) -> i32 {
 	if node.status() == cozy_chess::GameStatus::Won {
 		return -MATE_VALUE;
 	}
@@ -57,7 +57,7 @@ fn negamax(
 	}
 }
 
-pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> (i64, cozy_chess::Move) {
+pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i32) -> (i32, cozy_chess::Move) {
 	let mut evaluation = -2 * MATE_VALUE;
 	let mut best = cozy_chess::Move {from: cozy_chess::Square::A1, to: cozy_chess::Square::A1, promotion: None};
 	node.generate_moves(|moves| {
