@@ -1,5 +1,6 @@
 use cozy_chess;
 
+pub mod evaluate;
 pub mod search;
 pub mod ui;
 
@@ -73,7 +74,7 @@ fn main() {
 
 			// searching
 			Some("go") => {
-				let (evaluation, best) = search::bestmove(position.clone(), 6, search::evaluate);
+				let (evaluation, best) = search::bestmove(position.clone(), 6, evaluate::material);
 				println!("info depth 6 score cp {}", evaluation);
 				println!("bestmove {}", best);
 			},
