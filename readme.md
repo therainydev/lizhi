@@ -11,6 +11,9 @@
 
 lizhi (荔枝) is a work-in-progress chess and shatranj engine, now written in Rust.
 
+## A note on building
+lizhi benefits extensively from compiler optimizations; as a result, you are advised to build as follows:
+`RUSTFLAGS='-C target-cpu=native' cargo build --release`
 
 ## Features
 - Minimal UCI support.
