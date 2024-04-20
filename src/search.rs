@@ -1,11 +1,11 @@
 use std::ops::Not;
 use cozy_chess;
 
-const MIN_MATE_VALUE:i32 =  900000;
-const MATE_VALUE:i32     = 1000000;
+const MIN_MATE_VALUE:i32 =  10301;
+const MATE_VALUE:i32     = 10500;
 
 pub fn evaluate(position: cozy_chess::Board) -> i32 {
-	1000 * (
+	100 * (
 		position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Pawn).len() as i32
 		+ 3 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Knight).len() as i32
 		+ 3 * position.colored_pieces(position.side_to_move(), cozy_chess::Piece::Bishop).len() as i32
