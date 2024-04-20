@@ -4,12 +4,16 @@ pub mod evaluate;
 pub mod search;
 pub mod ui;
 
+const NAME   :&str = env!("CARGO_PKG_NAME");
+const VERSION:&str = env!("CARGO_PKG_VERSION");
+const AUTHOR :&str = env!("CARGO_PKG_AUTHORS");
+
 fn main() {
 	print!(concat!(
-		"\x1b[0;3;31mlizhi 0.1.1\x1b[0m by \x1b[32mthe\x1b[36mrainy\x1b[34mdev\x1b[0m\n",
+		"\x1b[0;3;31m{} {}\x1b[0m by \x1b[32mthe\x1b[36mrainy\x1b[34mdev\x1b[0m\n",
 		"This program is a text-only chess/shatranj engine, but tries to be nice to work with even without a GUI.\n",
 		"If you need to work directly with UCI, enter 'uci'.\n"
-	));
+	), NAME, VERSION);
 
 	let mut position = cozy_chess::Board::default();
 
@@ -29,11 +33,11 @@ fn main() {
 			Some("isready") => println!("readyok"),
 			Some("uci")     => println!(concat!(
 					"uci\n",
-					"id name lizhi 0.1.1\n",
-					"id author 小雨",
+					"id name {} {}\n",
+					"id author {}",
 					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
-				)),
+				), NAME, VERSION, AUTHOR),
 
 			// displaying state
 			Some("show") => {
