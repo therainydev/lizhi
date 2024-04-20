@@ -23,7 +23,7 @@ fn main() {
 		let mut command = input.split_whitespace();
 
 		match command.next() {
-			// constant output
+			// outputting constant
 			Some("cat")     => println!("ᓚᘏᗢ"),
 			Some("isready") => println!("readyok"),
 			Some("uci")     => println!(concat!(
@@ -33,7 +33,7 @@ fn main() {
 					"uciok"
 				)),
 
-			// display state
+			// displaying state
 			Some("show") => {
 				ui::show(position.clone());
 			},
@@ -41,7 +41,7 @@ fn main() {
 				todo!();
 			},
 
-			// mutate state
+			// mutating state
 			Some("position") => {
 				match command.next() {
 					Some("startpos") => {
@@ -63,7 +63,7 @@ fn main() {
 				}
 			},
 
-			// search
+			// searching
 			Some("go") => {
 				let (evaluation, best) = search::bestmove(position.clone(), 5, search::evaluate);
 				println!("info depth 5 score cp {}", evaluation/10);
