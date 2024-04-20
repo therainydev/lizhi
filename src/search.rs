@@ -1,7 +1,8 @@
 use std::ops::Not;
 use cozy_chess;
 
-const MATE_VALUE:i64 = 1000000;
+const MIN_MATE_VALUE:i64 =  900000;
+const MATE_VALUE:i64     = 1000000;
 
 pub fn evaluate(position: cozy_chess::Board) -> i64 {
 	1000 * (
@@ -49,7 +50,11 @@ fn negamax(
 		}
 		false
 	});
-	evaluation
+	if evaluation >= MIN_MATE_VALUE {
+		evaluation - 1
+	} else {
+		evaluation
+	}
 }
 
 pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> (i64, cozy_chess::Move) {
