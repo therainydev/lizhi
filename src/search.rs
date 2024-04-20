@@ -1,4 +1,3 @@
-use std::cmp;
 use std::ops::Not;
 use cozy_chess;
 
@@ -19,7 +18,13 @@ pub fn evaluate(position: cozy_chess::Board) -> i64 {
 	)
 }
 
-fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i64) -> i64 {
+fn negamax(
+	node: cozy_chess::Board,
+	depth: u64,
+	mut alpha: i64,
+	beta: i64,
+	evaluate: fn(cozy_chess::Board)->i64
+) -> i64 {
 	if node.status() == cozy_chess::GameStatus::Won {
 		return -MATE_VALUE;
 	}
@@ -35,7 +40,12 @@ fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)-
 		for mv in moves {
 			let mut new_node = node.clone();
 			new_node.play_unchecked(mv);
-			evaluation = cmp::max(evaluation, -negamax(new_node, depth-1, evaluate) * 9 / 10);
+			let new_evaluation = -negamax(new_node, depth-1, -beta, -alpha, evaluate);
+			evaluation = std::cmp::max(evaluation, new_evaluation);
+			alpha = std::cmp::max(alpha, new_evaluation);
+			if alpha >= beta {
+				break;
+			}
 		}
 		false
 	});
@@ -49,7 +59,7 @@ pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Bo
 		for mv in moves {
 			let mut new_node = node.clone();
 			new_node.play_unchecked(mv);
-			let node_evaluation = -negamax(new_node, depth-1, evaluate);
+			let node_evaluation = -negamax(new_node, depth-1, -2 * MATE_VALUE, 2 * MATE_VALUE, evaluate);
 			if node_evaluation > evaluation {
 				evaluation = node_evaluation;
 				best = mv;
