@@ -34,7 +34,7 @@ fn negamax(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)-
 	node.generate_moves(|moves| {
 		for mv in moves {
 			let mut new_node = node.clone();
-			new_node.play(mv);
+			new_node.play_unchecked(mv);
 			evaluation = cmp::max(evaluation, -negamax(new_node, depth-1, evaluate) * 9 / 10);
 		}
 		false
@@ -48,7 +48,7 @@ pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Bo
 	node.generate_moves(|moves| {
 		for mv in moves {
 			let mut new_node = node.clone();
-			new_node.play(mv);
+			new_node.play_unchecked(mv);
 			let node_evaluation = -negamax(new_node, depth-1, evaluate);
 			if node_evaluation > evaluation {
 				evaluation = node_evaluation;
