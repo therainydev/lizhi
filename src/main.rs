@@ -58,21 +58,21 @@ fn main() {
 								while move_str != None {
 									match cozy_chess::util::parse_uci_move(&position, move_str.unwrap()) {
 										Ok(v) => position.play(v),
-										Err(_) => println!("\x1b[0;31minvalid move\x1b[0m"),
+										Err(_) => println!("info error \x1b[0;31minvalid move\x1b[0m"),
 									}
 									move_str = command.next();
 								}
 							},
 							None => (),
-							_ => println!("\x1b[0;31minvalid command\x1b[0m"),
+							_ => println!("info error \x1b[0;31minvalid command\x1b[0m"),
 						}
 					},
 					None => {
-						println!("\x1b[0;31mno position specified\x1b[0m");
+						println!("info error \x1b[0;31mno position specified\x1b[0m");
 						continue;
 					},
 					_ => {
-						println!("\x1b[0;31minvalid command\x1b[0m");
+						println!("info error \x1b[0;31minvalid command\x1b[0m");
 					},
 				}
 			},
