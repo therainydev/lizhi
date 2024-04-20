@@ -6,7 +6,7 @@ pub mod ui;
 fn main() {
 	print!(concat!(
 		"\x1b[0;3;31mlizhi 0.1.0\x1b[0m by \x1b[32mthe\x1b[36mrainy\x1b[34mdev\x1b[0m\n",
-		"This program is a text-only shatranj engine, but tries to be nice to work with even without a GUI.\n",
+		"This program is a text-only chess/shatranj engine, but tries to be nice to work with even without a GUI.\n",
 		"If you need to work directly with UCI, enter 'uci'.\n"
 	));
 
