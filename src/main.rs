@@ -30,6 +30,7 @@ fn main() {
 			Some("uci")     => println!(concat!(
 					"uci\n",
 					"id name lizhi 0.1.1\n",
+					"id author 小雨",
 					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
 				)),
