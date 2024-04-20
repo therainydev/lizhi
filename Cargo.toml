@@ -1,6 +1,6 @@
 [package]
 name = "lizhi"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Rain <therainy.dev@tutanota.de>"]
 description = "work-in-progress UCI chess and shatranj engine"
 repository = "https://github.com/therainydev/lizhi"
