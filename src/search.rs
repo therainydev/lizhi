@@ -1,7 +1,45 @@
 use cozy_chess;
 
+
 const MIN_MATE_VALUE:i32 = 10301;
 const MATE_VALUE:i32     = 10500;
+
+// note: this is the largest number of moves in a position that can be found from the normal starting position.
+//       example with 218 moves: R6R/3Q4/1Q4Q1/4Q3/2Q4Q/Q4Q2/pp1Q4/kBNNK1B1 b - - 0 1
+//       positions with more moves may not occur in a real chess game and will cause a panic.
+//       TODO: refuse such positions.
+const MAX_MOVES:usize = 218;
+
+enum MoveType {
+	UnderPromotion,
+	Quiet,
+	Check,
+	Capture,
+	QueenPromotion
+}
+
+type TypeSortedMove = (cozy_chess::Move, MoveType);
+
+enum MoveSortStage {
+	QueenPromotions,
+	Captures,
+	Checks,
+	Quiets,
+	UnderPromotions,
+	Done
+}
+
+struct SortedMoveGenerator {
+	stage: MoveSortStage,
+	queenpromotions: [TypeSortedMove; MAX_MOVES],
+	captures       : [TypeSortedMove; MAX_MOVES],
+	checks         : [TypeSortedMove; MAX_MOVES],
+	quiets         : [TypeSortedMove; MAX_MOVES],
+	underpromotions: [TypeSortedMove; MAX_MOVES],
+}
+
+impl SortedMoveGenerator {
+}
 
 fn negamax(
 	node: cozy_chess::Board,
