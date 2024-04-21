@@ -29,7 +29,7 @@ fn negamax(
 			evaluation = std::cmp::max(evaluation, new_evaluation);
 			alpha = std::cmp::max(alpha, new_evaluation);
 			if alpha >= beta {
-				break;
+				return true;
 			}
 		}
 		false
