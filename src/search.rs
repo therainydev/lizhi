@@ -5,7 +5,7 @@ const MATE_VALUE:i32     = 10500;
 
 fn negamax(
 	node: cozy_chess::Board,
-	depth: u64,
+	depth: i64,
 	mut alpha: i32,
 	beta: i32,
 	evaluate: fn(cozy_chess::Board)->i32
@@ -16,8 +16,10 @@ fn negamax(
 	if node.status() == cozy_chess::GameStatus::Drawn {
 		return 0;
 	}
-	if depth == 0 {
-		return evaluate(node);
+	if depth <= 0 {
+		if node.checkers().len() == 0 {
+			return evaluate(node);
+		}
 	}
 
 	let mut evaluation = -2 * MATE_VALUE;
@@ -41,7 +43,7 @@ fn negamax(
 	}
 }
 
-pub fn bestmove(node: cozy_chess::Board, depth: u64, evaluate: fn(cozy_chess::Board)->i32) -> (i32, cozy_chess::Move) {
+pub fn bestmove(node: cozy_chess::Board, depth: i64, evaluate: fn(cozy_chess::Board)->i32) -> (i32, cozy_chess::Move) {
 	let mut evaluation = -2 * MATE_VALUE;
 	let mut best = cozy_chess::Move {from: cozy_chess::Square::A1, to: cozy_chess::Square::A1, promotion: None};
 	node.generate_moves(|moves| {
