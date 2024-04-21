@@ -1,4 +1,5 @@
 use cozy_chess;
+use std::io::IsTerminal;
 
 pub mod evaluate;
 pub mod search;
@@ -15,6 +16,7 @@ fn main() {
 		"If you need to work directly with UCI, enter 'uci'.\n"
 	), NAME, VERSION);
 
+	let mut is_tty = std::io::stdout().is_terminal();
 	let mut position = cozy_chess::Board::default();
 
 	loop {
@@ -39,6 +41,13 @@ fn main() {
 					"uciok"
 				), NAME, VERSION, AUTHOR),
 			Some("ucinewgame") => (),
+
+			// toggling is_tty
+			Some("tty") => match command.next() {
+				Some("yes") => is_tty = true,
+				Some("no")  => is_tty = false,
+				_ => println!("info error \x1b[0;31minvalid command\x1b[0m"),
+			},
 
 			// displaying state
 			Some("show") => {
@@ -91,8 +100,13 @@ fn main() {
 			// searching
 			Some("go") => {
 				let (evaluation, best) = search::bestmove(position.clone(), 6, evaluate::material);
-				println!("info depth 6 score cp {}", evaluation);
-				println!("bestmove {}", best);
+				if is_tty {
+					println!("Evaluation: {} centipawns", evaluation);
+					println!("Best move : {}", best);
+				} else {
+					println!("info depth 6 score cp {}", evaluation);
+					println!("bestmove {}", best);
+				}
 			},
 
 			// quitting
