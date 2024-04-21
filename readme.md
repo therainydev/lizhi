@@ -18,7 +18,8 @@ lizhi benefits extensively from compiler optimizations; as a result, you are adv
 ## Features
 - Minimal UCI support.
 - Material-counting (1, 3, 3, 5, 7) evaluation.
-- Negamax search (no pruning).
+- Negamax search with alpha-beta pruning.
+  - Basic quiescence search: continues searching if the player to move is in check.
 
 ## Todo
 - Make it play shatranj.
