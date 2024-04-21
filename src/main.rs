@@ -76,6 +76,16 @@ fn main() {
 					},
 				}
 			},
+			Some("moves") => {
+				let mut move_str = command.next();
+				while move_str != None {
+					match cozy_chess::util::parse_uci_move(&position, move_str.unwrap()) {
+						Ok(v) => position.play(v),
+						Err(_) => println!("info error \x1b[0;31minvalid move\x1b[0m"),
+					}
+					move_str = command.next();
+				}
+			},
 
 			// searching
 			Some("go") => {
