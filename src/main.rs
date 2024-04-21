@@ -34,10 +34,11 @@ fn main() {
 			Some("uci")     => println!(concat!(
 					"uci\n",
 					"id name {} {}\n",
-					"id author {}",
+					"id author {}\n",
 					"option name UCI_Variant type combo default chess var chess var shatranj\n",
 					"uciok"
 				), NAME, VERSION, AUTHOR),
+			Some("ucinewgame") => (),
 
 			// displaying state
 			Some("show") => {
