@@ -108,6 +108,13 @@ fn main() {
 					println!("bestmove {}", best);
 				}
 			},
+			Some("play") => {
+				let (evaluation, best) = search::bestmove(position.clone(), 6, evaluate::material);
+				position.play_unchecked(best);
+				println!("evaluation: {} centipawns", evaluation);
+				println!("my move is {}", best);
+				ui::show(position.clone());
+			},
 
 			// quitting
 			Some("quit") => break,
